@@ -4,7 +4,7 @@
     importScripts(
       'https://www.gstatic.com/firebasejs/9.19.1/firebase-messaging-compat.js'
     )
-    firebase.initializeApp({"apiKey":"AIzaSyAG7-nkXcZOgULM6aEoQwNTemp9PrYI0yY","authDomain":"cade-meu-pet-b7cc8.firebaseapp.com","projectId":"cade-meu-pet-b7cc8","storageBucket":"cade-meu-pet-b7cc8.appspot.com","messagingSenderId":"867991487626","appId":"1:867991487626:web:fa408b8c65db92d0f2d973","measurementId":"G-1NXMPKLNXK"})
+    firebase.initializeApp({"apiKey":undefined,"authDomain":undefined,"projectId":undefined,"storageBucket":undefined,"messagingSenderId":undefined,"appId":undefined,"measurementId":undefined})
 
     // Retrieve an instance of Firebase Messaging so that it can handle background
     // messages.
