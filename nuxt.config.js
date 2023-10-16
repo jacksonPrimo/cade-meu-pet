@@ -1,6 +1,8 @@
+require('dotenv').config();
 import colors from 'vuetify/es5/util/colors'
 import fs from 'fs'
 import path from 'path'
+
 export default {
   // server: {
   //   https: {
@@ -12,8 +14,8 @@ export default {
   // ssr: true,
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: 'Auxilio Pet',
-    title: 'Auxilio Pet',
+    titleTemplate: 'Cadê Meu Pet?',
+    title: 'Cadê Meu Pet?',
     htmlAttrs: {
       lang: 'en'
     },
@@ -64,12 +66,7 @@ export default {
       measurementId: process.env.MEASUREMENT_ID
     },
     services: {
-      // auth: true,
-      messaging: {
-        createServiceWorker: true,
-        fcmPublicVapiKey: "BBgOIwlyvfmrcCRlhhDfpjAgImZWx4yNdgGubuE7Q4D3L8eTfmHTu1X2uCiOYtXfAMbT-8at-shyrtlU2KfsWLI",
-        inject: fs.readFileSync('./serviceWorker.js')
-      }
+      auth: true
     },
   },
 
