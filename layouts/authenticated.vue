@@ -84,7 +84,16 @@ export default {
       ],
       title: 'Cadê Meu Pet?'
     }
-  }
+  },
+  middleware: [
+    async (from, to) => {      
+      if(from.$fire.auth.currentUser == null) {
+        from.redirect('/')
+      } else {
+        to()
+      }
+    }
+  ]
 }
 </script>
 <style lang="scss">
