@@ -9,56 +9,8 @@
             </span>
             <span>Ficamos felizes em vê-lo de volta conosco</span>
           </div>
-          <v-form ref="signinForm" v-model="valid">
-            <v-container>
-              <v-row>
-                <v-text-field
-                  solo
-                  prepend-inner-icon="mdi-email"
-                  v-model="email"
-                  :rules="emailRules"
-                  label="E-mail"
-                  required
-                ></v-text-field>
-              </v-row>
-              <v-row>
-                <v-text-field
-                  solo
-                  v-model="password"
-                  :rules="passwordRules"
-                  label="Password"
-                  prepend-inner-icon="mdi-lock-outline"
-                  required
-                ></v-text-field>
-              </v-row>
-              <v-row v-if="signinError">
-                <span class="error--text">Usuario ou senha inválidos</span>
-              </v-row>
-              <v-row>
-                <v-btn
-                  :disabled="!valid"
-                  color="grey darken-4"
-                  style="width: 100%; color: white"
-                  @click="signinWithForm"
-                >
-                  Entrar
-                </v-btn>
-              </v-row>
-            </v-container>
-          </v-form>
-
-          <div class="mt-5 my-2">
-            <v-divider>aa</v-divider>
-            <span style="color: grey; font-size: 10px;">outras formas de login</span>
-          </div>
-
-          <v-btn
-            class="mt-2"
-            style="width: 100%;"
-            @click="signInWithGoogle"
-          >
-            <v-icon color="grey-2">mdi-google</v-icon> Entrar com google 
-          </v-btn>
+          <SigninForm @changeToSignup="()=>signin = false" v-if="signin"></SigninForm>
+          <SignupForm @changeToSignin="()=>signin = true" v-else></SignupForm>
         </v-col>
         <v-col class="second-column"></v-col>
       </v-row>
@@ -67,64 +19,18 @@
 </template>
 
 <script>
+import SigninForm from '../components/SigninForm.vue'
+import SignupForm from '../components/SignupForm.vue'
 
 export default {
+  components: {
+    SigninForm,
+    SignupForm,
+  },
   data: () => ({
-    valid: false,
-    password: '',
-    passwordRules: [
-      value => {
-        if (value) return true
-        return 'Password is required.'
-      },
-    ],
-    email: '',
-    emailRules: [
-      value => {
-        if (value) return true
-
-        return 'E-mail is required.'
-      },
-      value => {
-        if (/.+@.+\..+/.test(value)) return true
-
-        return 'E-mail must be valid.'
-      },
-    ],
-    signinError: false
+    signin: true,
   }),
-  methods: {
-    async signInWithGoogle() {
-      try {
-        var provider = new this.$fireModule.auth.GoogleAuthProvider();
-        let authData = await this.$fire.auth.signInWithPopup(provider)
-        this.finishSign()
-      } catch(e) {
-        console.log(e)
-      }
-    },
-
-    async signinWithForm(){
-      this.$refs.signinForm.validate()
-      if(this.valid) {
-        try {
-          const result = await this.$fire.auth.signInWithEmailAndPassword(
-            this.email,
-            this.password
-          )
-          console.log(result)
-          this.finishSign()
-        } catch(e) {
-          this.signinError = true
-          console.log(e)
-        }
-      }
-    },
-  
-    finishSign(){
-      this.$router.push('/profile')
-    }
-  }
+  methods: {}
 }
 </script>
 
@@ -139,7 +45,7 @@ export default {
 
 .box {
   width: 90%;
-  height: 80%;
+  min-height: 80%;
   border-radius: 20px;
   padding: 25px;
 }
@@ -177,5 +83,6 @@ export default {
 .v-input__slot {
   box-shadow: none !important;
   background-color: rgba(105, 105, 105, 0.123) !important;
+  border-radius: 12px !important;
 }
 </style>
