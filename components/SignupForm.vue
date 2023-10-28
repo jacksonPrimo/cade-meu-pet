@@ -133,8 +133,9 @@ export default {
     async signUpWithGoogle() {
       try {
         var provider = new this.$fireModule.auth.GoogleAuthProvider();
-        let authData = await this.$fire.auth.signUpWithGoogle(provider)
-        this.finishSignup()
+        const auth = await this.$fire.auth.signInWithPopup(provider)
+        const authData = auth.user.multiFactor.user
+        this.finishSignup(authData)
       } catch(e) {
         console.log(e)
       }
@@ -144,11 +145,12 @@ export default {
       this.$refs.signupForm.validate()
       if(this.valid) {
         try {
-          await this.$fire.auth.createUserWithEmailAndPassword(
+          const auth = await this.$fire.auth.createUserWithEmailAndPassword(
             this.email,
             this.password
           )
-          this.finishSignup()
+          const authData = auth.user.multiFactor.user
+          this.finishSignup(authData)
         } catch(e) {
           this.signinError = true
           console.log(e)
@@ -156,7 +158,12 @@ export default {
       }
     },
   
-    finishSignup(){
+    finishSignup(authData){
+      const params = {
+        email: authData.email,
+        name: authData.displayName
+      }
+      this.$fire.firestore.collection('users').doc(authData.uid).set(params)
       this.$router.push('/lost-and-found')
     },
 

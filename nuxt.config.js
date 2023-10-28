@@ -66,7 +66,8 @@ export default {
       measurementId: process.env.MEASUREMENT_ID
     },
     services: {
-      auth: true
+      auth: true,
+      firestore: true
     },
   },
 

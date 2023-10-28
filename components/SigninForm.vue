@@ -86,9 +86,10 @@ export default {
   methods: {
     async signInWithGoogle() {
       try {
-        var provider = new this.$fireModule.auth.GoogleAuthProvider();
-        let authData = await this.$fire.auth.signInWithPopup(provider)
-        this.finishSign()
+        const provider = new this.$fireModule.auth.GoogleAuthProvider();
+        const auth = await this.$fire.auth.signInWithPopup(provider)
+        const authData = auth.user.multiFactor.user
+        this.finishSign(authData)
       } catch(e) {
         console.log(e)
       }
@@ -98,18 +99,24 @@ export default {
       this.$refs.signinForm.validate()
       if(this.valid) {
         try {
-          const result = await this.$fire.auth.signInWithEmailAndPassword(
+          const auth = await this.$fire.auth.signInWithEmailAndPassword(
             this.email,
             this.password
           )
-          this.finishSign()
+          const authData = auth.user.multiFactor.user
+          this.finishSign(authData)
         } catch(e) {
           this.signinError = true
           console.log(e)
         }
       }
     },  
-    finishSign(){
+    finishSign(authData){
+      const params = {
+        email: authData.email,
+        name: authData.displayName
+      }
+      this.$fire.firestore.collection('users').doc(authData.uid).set(params)
       this.$router.push('/lost-and-found')
     },
 
