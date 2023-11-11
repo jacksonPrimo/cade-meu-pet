@@ -45,7 +45,7 @@ export default {
 
 .box {
   width: 90%;
-  min-height: 80%;
+  min-height: 75%;
   border-radius: 20px;
   padding: 25px;
 }
@@ -84,5 +84,18 @@ export default {
   box-shadow: none !important;
   background-color: rgba(105, 105, 105, 0.123) !important;
   border-radius: 12px !important;
+}
+
+@media only screen and (min-width: 1600px) {
+  .box {
+    width: 80%;
+    min-height: 67%;
+  }
+}
+
+@media only screen and (max-width: 960px) {
+  .second-column {
+    display: none;
+  }
 }
 </style>
