@@ -20,6 +20,18 @@
           <v-icon>{{item.icon}}</v-icon>
           <span>{{item.title}}</span>
         </v-btn>
+
+        <v-btn 
+          plain 
+          value="recent" 
+          router
+          exact
+          color="red"
+          @click="logout"
+        >
+          <v-icon>mdi-exit-to-app</v-icon>
+          <span>Sair</span>
+        </v-btn>
       </div>
       <v-app-bar-nav-icon class="mobile-menu" @click.stop="drawer = !drawer" />
     </v-app-bar>
@@ -93,7 +105,13 @@ export default {
         to()
       }
     }
-  ]
+  ],
+  methods: {
+    logout(){
+      this.$fire.auth.signOut()
+      this.$router.push('/')
+    }
+  }
 }
 </script>
 <style lang="scss">
