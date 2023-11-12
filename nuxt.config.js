@@ -118,7 +118,7 @@ export default {
       dev: true,
       offline: true,
       offlineAssets: ['/*'],
-      importScripts: [ 'custom-sw.js' ],
+      // importScripts: [ 'custom-sw.js' ],
     }
   },
 
