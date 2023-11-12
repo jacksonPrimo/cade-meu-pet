@@ -118,12 +118,12 @@ export default {
 }
 </script>
 <style lang="scss">
-  @media only screen and (min-width: 600px) {
+  @media only screen and (min-width: 800px) {
     .mobile-menu {
       display: none;
     }
   }
-  @media only screen and (max-width: 600px) {
+  @media only screen and (max-width: 800px) {
     .desktop-menu {
       display: none;
     }
