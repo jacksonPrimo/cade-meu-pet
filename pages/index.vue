@@ -88,7 +88,7 @@ export default {
 
 @media only screen and (min-width: 1600px) {
   .box {
-    width: 80%;
+    width: 72%;
     min-height: 67%;
   }
 }
