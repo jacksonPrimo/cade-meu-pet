@@ -1,6 +1,6 @@
 <template>
   <v-row>
-    <v-col cols="3">
+    <v-col sm="12" md="3">
       <span class="filter-title">
         Filtros
       </span>
@@ -99,32 +99,61 @@
         </div>
       </div>
     </v-col>
-    <v-col cols="9">
-      <span class="title">
-        Achados e Perdidos
-      </span>
+    <v-col sm="12" md="9">
+      <v-row>
+        <v-col sm="12" md="6" lg="3" v-for="(post, index) in posts" :key="index">
+          <PostCard :post="post"></PostCard>
+        </v-col>
+      </v-row>
     </v-col>
   </v-row>
 </template>
 
 <script>
+import PostCard from '@/components/PostCard'
+
 export default {
   name: 'LostAndFoundPage',
   layout: "authenticated",
+  components: {
+    PostCard
+  },
   data: ()=>({
     name: '',
     chipId: '',
-    zipcode: "",
+    zipcode: '',
     zipcodeDistance: 0,
     found: true,
     lost: true,
-    sort: "activity"
+    sort: "activity",
+    posts: [
+      {
+        image: 'https://hypescience.com/wp-content/uploads/2010/09/cachorronariz.jpg',
+        id: '123dadadadagfa',
+        name: 'Nina',
+        age: 11,
+        sex: 'F',
+        race: 'Viralata',
+        situation: 'lost',
+        created: new Date().toLocaleString()
+      },
+      {
+        image: 'https://www.blupet.com.br/uploads/pets/10731/1073105082013115549000000.jpg',
+        id: '123dadadadagfa',
+        name: 'Nina',
+        age: 11,
+        sex: 'F',
+        race: 'Viralata',
+        situation: 'found',
+        created: new Date().toLocaleString()
+      }
+    ]
   })
 }
 </script>
 
 <style lang="scss">
-.filter-title, .title {
+.filter-title {
   font-weight: bold;
   font-size: 24px;
 }
@@ -138,6 +167,12 @@ export default {
   .v-text-field__details, .v-messages {
     display: none;
   }
+}
+
+.postContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 </style>
