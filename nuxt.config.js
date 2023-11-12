@@ -14,8 +14,8 @@ export default {
   // ssr: true,
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: 'Cadê Meu Pet?',
-    title: 'Cadê Meu Pet?',
+    titleTemplate: 'Pet Connection',
+    title: 'Pet Connection',
     htmlAttrs: {
       lang: 'en'
     },
@@ -75,7 +75,7 @@ export default {
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
     theme: {
-      dark: false,
+      dark: true,
       themes: {
         dark: {
           primary: colors.blue.darken2,
@@ -92,7 +92,7 @@ export default {
 
   pwa: {
     meta: {
-      title: 'cadê meu pet?',
+      title: 'Pet Connection',
       author: 'jackson aquino primo'
     },
     icon: {
@@ -100,7 +100,7 @@ export default {
       sizes: [64, 120, 144, 152, 192, 384, 512]
     },
     manifest: {
-      name: 'Cadê Meu Pet?',
+      name: 'Pet Connection',
       short_name: 'CMP',
       lang: 'pt-br',
       icons: [
