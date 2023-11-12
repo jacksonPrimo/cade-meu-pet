@@ -72,6 +72,8 @@
   </v-app>
 </template>
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'AuthenticatedLayout',
   data () {
@@ -97,18 +99,19 @@ export default {
       title: 'Cadê Meu Pet?'
     }
   },
-  middleware: [
-    async (from, to) => {      
-      if(from.$fire.auth.currentUser == null) {
-        from.redirect('/')
-      } else {
-        to()
-      }
-    }
-  ],
+  computed: {
+    ...mapGetters({
+      authenticated: 'auth/authenticated',
+    })
+  },
+  async beforeMount(){
+    this.$store.dispatch('auth/initialState')
+    const authenticated = await this.authenticated
+    if(!authenticated) this.$router.push('/')
+  },
   methods: {
     logout(){
-      this.$fire.auth.signOut()
+      this.$store.dispatch('auth/signOut')
       this.$router.push('/')
     }
   }

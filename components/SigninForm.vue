@@ -85,40 +85,26 @@ export default {
   }),
   methods: {
     async signInWithGoogle() {
-      try {
-        const provider = new this.$fireModule.auth.GoogleAuthProvider();
-        const auth = await this.$fire.auth.signInWithPopup(provider)
-        const authData = auth.user.multiFactor.user
-        this.finishSign(authData)
-      } catch(e) {
-        console.log(e)
+      const result = await this.$store.dispatch('auth/signInWithGoogle')
+      if(result?.error) {
+        alert('Ocorreu um erro inesperado')
+        console.log(result.error)
+      } else {
+        this.$router.push('/lost-and-found')
       }
     },
 
     async signinWithForm(){
       this.$refs.signinForm.validate()
       if(this.valid) {
-        try {
-          const auth = await this.$fire.auth.signInWithEmailAndPassword(
-            this.email,
-            this.password
-          )
-          const authData = auth.user.multiFactor.user
-          this.finishSign(authData)
-        } catch(e) {
-          this.signinError = true
-          console.log(e)
+        const result = await this.$store.dispatch('auth/signInWithEmailAndPassword', { email: this.email, password: this.password })
+        if(result?.error) {
+          alert('Usuário ou senha incorretos')
+        } else {
+          this.$router.push('/lost-and-found')
         }
       }
     },  
-    finishSign(authData){
-      const params = {
-        email: authData.email,
-        name: authData.displayName
-      }
-      this.$fire.firestore.collection('users').doc(authData.uid).set(params)
-      this.$router.push('/lost-and-found')
-    },
 
     changeToSignup(){
       this.$emit('changeToSignup')
