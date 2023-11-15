@@ -8,7 +8,7 @@
       height="200px"
       :src="post.image"
     >
-      <v-card-title>Nina</v-card-title>
+      <v-card-title>{{ post.name }}</v-card-title>
     </v-img>
 
     <v-card-subtitle class="pb-0">
@@ -42,7 +42,7 @@
 
 <script>
   export default {
-    name: 'PostCard',
+    name: 'Card',
     props: {
       post: {
         type: Object,
