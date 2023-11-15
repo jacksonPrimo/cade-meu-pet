@@ -101,22 +101,27 @@
     </v-col>
     <v-col sm="12" md="9">
       <v-row>
-        <v-col sm="12" md="6" lg="3" v-for="(post, index) in posts" :key="index">
-          <PostCard :post="post"></PostCard>
+        <v-col sm="12" md="4" lg="3" v-for="(post, index) in posts" :key="index">
+          <div @click="selectedPost = post">
+            <PostCard :post="post"></PostCard>
+          </div>
         </v-col>
       </v-row>
     </v-col>
+    <PostModal :post="selectedPost" @closeModal="selectedPost=null"></PostModal>
   </v-row>
 </template>
 
 <script>
-import PostCard from '@/components/PostCard'
+import PostCard from '@/components/Card.vue'
+import PostModal from '@/components/PostModal.vue'
 
 export default {
   name: 'LostAndFoundPage',
   layout: "authenticated",
   components: {
-    PostCard
+    PostCard,
+    PostModal
   },
   data: ()=>({
     name: '',
@@ -140,15 +145,16 @@ export default {
       {
         image: 'https://www.blupet.com.br/uploads/pets/10731/1073105082013115549000000.jpg',
         id: '123dadadadagfa',
-        name: 'Nina',
+        name: 'poly',
         age: 11,
         sex: 'F',
         race: 'Viralata',
         situation: 'found',
         created: new Date().toLocaleString()
       }
-    ]
-  })
+    ],
+    selectedPost: null
+  }),
 }
 </script>
 
