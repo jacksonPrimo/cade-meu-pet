@@ -35,9 +35,14 @@
           </v-card-title>
           <div id="map-wrap" style="height: 50vh;">
             <client-only>
-              <l-map :zoom=13 :center="[-7.080158, -41.414843]">
+              <l-map :zoom=13 :center="[-7.080158, -41.414843]"  @update:bounds="handleEvent" @click="clicked">
                 <l-tile-layer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"></l-tile-layer>
                 <l-marker :lat-lng="[-7.080158, -41.414843]"></l-marker>
+                <l-circle
+                  :lat-lng="[-7.080158, -41.414843]"
+                  :radius="4500"
+                  color="green"
+                />
               </l-map>
             </client-only>
           </div>
@@ -70,24 +75,30 @@
 </template>
 
 <script>
-  export default {
-    props: {
-      post: {
-        type: Object,
-        required: false,
-      },
+export default {
+  props: {
+    post: {
+      type: Object,
+      required: false,
     },
-    methods: {
-      closeModal(){
-        this.$emit('closeModal')
-      }
+  },
+  methods: {
+    closeModal(){
+      this.$emit('closeModal')
     },
-    computed: {
-      openModal(){
-        return !!this.post
-      }
+    handleEvent(e){
+      console.log(e)
+    },
+    clicked(e){
+      console.log(e)
     }
+  },
+  computed: {
+    openModal(){
+      return !!this.post
+    },
   }
+}
 </script>
 
 <style lang="scss">
