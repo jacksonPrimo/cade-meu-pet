@@ -90,7 +90,7 @@ export default {
         alert('Ocorreu um erro inesperado')
         console.log(result.error)
       } else {
-        this.$router.push('/lost-and-found')
+        this.$router.push('/posts')
       }
     },
 
@@ -101,7 +101,7 @@ export default {
         if(result?.error) {
           alert('Usuário ou senha incorretos')
         } else {
-          this.$router.push('/lost-and-found')
+          this.$router.push('/posts')
         }
       }
     },  

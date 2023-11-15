@@ -164,7 +164,7 @@ export default {
         name: authData.displayName
       }
       this.$fire.firestore.collection('users').doc(authData.uid).set(params)
-      this.$router.push('/lost-and-found')
+      this.$router.push('/posts')
     },
 
     changeToSignin(){

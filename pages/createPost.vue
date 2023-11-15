@@ -1,10 +1,10 @@
 <template>
-  <div>Adoção</div>
+  <div>Create Post</div>
 </template>
 
 <script>
 export default {
-  name: 'AdoptionPage',
+  name: 'CreatePost',
   layout: "authenticated"
 }
 </script>

@@ -81,22 +81,22 @@ export default {
       drawer: false,
       items: [
         {
-          icon: 'mdi-paw',
-          title: 'Achados e Perdidos',
-          to: '/lost-and-found'
+          icon: 'mdi-cat',
+          title: 'Anunciar',
+          to: '/createPost'
         },
         {
-          icon: 'mdi-rabbit-variant-outline',
-          title: 'Adoção',
-          to: '/adoption'
+          icon: 'mdi-paw',
+          title: 'Postagens',
+          to: '/posts'
         },
         {
           icon: 'mdi-account-cog-outline',
           title: 'Preferências',
-          to: '/account-preferences'
+          to: '/accountPreferences'
         },
       ],
-      title: 'Cadê Meu Pet?'
+      title: 'Pet Connection'
     }
   },
   computed: {

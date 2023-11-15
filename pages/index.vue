@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import SigninForm from '../components/SigninForm.vue'
 import SignupForm from '../components/SignupForm.vue'
 
@@ -30,6 +31,16 @@ export default {
   data: () => ({
     signin: true,
   }),
+  computed: {
+    ...mapGetters({
+      authenticated: 'auth/authenticated',
+    })
+  },
+  async beforeMount(){
+    this.$store.dispatch('auth/initialState')
+    const authenticated = await this.authenticated
+    if(authenticated) this.$router.push('/posts')
+  },
   methods: {}
 }
 </script>

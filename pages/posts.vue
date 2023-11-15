@@ -1,9 +1,9 @@
 <template>
   <v-row>
     <v-col sm="12" md="3">
-      <span class="filter-title">
+      <div class="filter-title">
         Filtros
-      </span>
+      </div>
 
       <div class="filter mb-3">
         <span class="filter-subtitle">
@@ -140,7 +140,9 @@ export default {
         sex: 'F',
         race: 'Viralata',
         situation: 'lost',
-        created: new Date().toLocaleString()
+        created: new Date().toLocaleString(),
+        address_lat: "",
+        address_long: "",
       },
       {
         image: 'https://www.blupet.com.br/uploads/pets/10731/1073105082013115549000000.jpg',
