@@ -36,9 +36,9 @@
       <v-app-bar-nav-icon class="mobile-menu" @click.stop="drawer = !drawer" />
     </v-app-bar>
     <v-main>
-      <v-container>
-        <Nuxt />
-      </v-container>
+      <div style="padding: 10px 20px">
+        <Nuxt/>
+      </div>
     </v-main>
     <v-navigation-drawer
       class="mobile-menu"
