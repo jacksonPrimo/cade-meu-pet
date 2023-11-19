@@ -64,8 +64,14 @@ export default {
  methods: {
    next(){
      this.$refs.identifyForm.validate()
-     // setar state
-     if(this.valid) this.$emit("next")
+     if(this.valid){
+      this.$store.dispatch('post/setPostToCreate', {
+        name: this.name,
+        description: this.description,
+        reward: this.reward,
+      })
+      this.$emit("next")
+     }
    },
    previous(){
      this.$emit("previous")

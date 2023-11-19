@@ -106,7 +106,14 @@ export default {
     next(){
       this.$refs.basicInfoForm.validate()
       // setar o state
-      if(this.valid) this.$emit("next")
+      if(this.valid) {
+        this.$store.dispatch('post/setPostToCreate', {
+          situation: this.situation,
+          specie: this.specie,
+          gender: this.gender,
+        })
+        this.$emit("next")
+      }
     }
   }
 }

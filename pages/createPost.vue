@@ -2,122 +2,40 @@
   <v-row>
     <v-col cols="6 first-column"></v-col>
     <v-col cols="6 second-column">
-      <v-stepper v-model="e6" vertical>
+      <v-stepper v-model="currentStep" vertical>
 
-        <basic-info :currentStep="e6" @next="next"></basic-info>
+        <basic-info :currentStep="currentStep" @next="next"></basic-info>
 
-        <identify :currentStep="e6" @next="next" @previous="previous"></identify>
+        <identify :currentStep="currentStep" @next="next" @previous="previous"></identify>
 
-        <v-stepper-step
-          :complete="e6 > 3"
-          step="3"
-        >
-          Localização
-        </v-stepper-step>
-
-        <v-stepper-content step="3">
-          <v-card
-            color="grey lighten-1"
-            class="mb-12"
-            height="200px"
-          ></v-card>
-          <v-btn
-            color="primary"
-            @click="e6 = 4"
-          >
-            Continue
-          </v-btn>
-          <v-btn text>
-            Cancel
-          </v-btn>
-        </v-stepper-content>
-
-        <v-stepper-step step="4">
-          View setup instructions
-        </v-stepper-step>
-        <v-stepper-content step="4">
-          <v-card
-            color="grey lighten-1"
-            class="mb-12"
-            height="200px"
-          ></v-card>
-          <v-btn
-            color="primary"
-            @click="e6 = 1"
-          >
-            Continue
-          </v-btn>
-          <v-btn text>
-            Cancel
-          </v-btn>
-        </v-stepper-content>
+        <location :currentStep="currentStep" @next="finish" @previous="previous"></location>
       </v-stepper>
     </v-col>
   </v-row>
 </template>
 
-<script>
+<script lang="ts">
 import BasicInfo from '@/components/Steps/BasicInfo.vue'
 import Identify from '@/components/Steps/Identify.vue'
+import Location from '@/components/Steps/Location.vue'
+
 export default {
-  components: { BasicInfo, Identify },
+  components: { BasicInfo, Identify, Location },
   name: 'CreatePost',
   layout: "authenticated",
   data: () => ({
-    e6: 1,
-    situationOptions: [
-      {
-        text: "Perdido",
-        value: "lost"
-      },
-      {
-        text: "Encontrado",
-        value: "found"
-      },
-      {
-        text: "Para adoção",
-        value: "adoption"
-      },
-    ],
-    specieOptions: [
-      {
-        text: "Cão",
-        value: "dog"
-      },
-      {
-        text: "Gato",
-        value: "cat"
-      },
-      {
-        text: "Coelho",
-        value: "rabbit"
-      },
-      {
-        text: "Passaro",
-        value: "bird"
-      },
-      {
-        text: "Outro",
-        value: "other"
-      },
-    ],
-    genderOptions: [
-      {
-        text: "Macho",
-        value: "M"
-      },
-      {
-        text: "Fêmea",
-        value: "F"
-      },
-    ]
+    currentStep: 1,
   }),
   methods: {
     next(){
-      this.e6 += 1
+      this.currentStep += 1
     },
     previous(){
-      this.e6 -= 1
+      this.currentStep -= 1
+    },
+    finish(){
+      const params = this.$store.state.post.postToCreate 
+      this.$fire.firestore.collection('posts').add(params)
     }
   }
 }
