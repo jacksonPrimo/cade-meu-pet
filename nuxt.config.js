@@ -11,7 +11,7 @@ export default {
   //   }
   // },
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
-  // ssr: true,
+  ssr: false,
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: 'Pet Connection',
@@ -115,12 +115,12 @@ export default {
       display: 'fullscreen',
       useWebmanifestExtension: false
     },
-    workbox: {
-      dev: true,
-      offline: true,
-      offlineAssets: ['/*'],
-      // importScripts: [ 'custom-sw.js' ],
-    }
+    // workbox: {
+    //   dev: true,
+    //   offline: true,
+    //   offlineAssets: ['/*'],
+    //   // importScripts: [ 'custom-sw.js' ],
+    // }
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
