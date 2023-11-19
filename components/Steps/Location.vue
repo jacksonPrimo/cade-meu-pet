@@ -29,7 +29,7 @@ import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch'
 export default {
   name: 'Location',
   data: () => ({
-    step: 3,
+    step: 4,
     map: null,
     location: null
   }),

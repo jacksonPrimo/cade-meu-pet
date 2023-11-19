@@ -106,8 +106,7 @@ export default {
   },
   async beforeMount(){
     this.$store.dispatch('auth/initialState')
-    const authenticated = await this.authenticated
-    if(!authenticated) this.$router.push('/')
+    if(!this.authenticated) this.$router.push('/')
   },
   methods: {
     logout(){
