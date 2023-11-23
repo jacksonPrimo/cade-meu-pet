@@ -11,8 +11,14 @@
     <v-form ref="identifyForm" v-model="valid">
       <v-text-field
         label="Nome"
-        :rules="[ value => value ? true : 'Nome é obrigatório' ]"
+        :rules="isLost ? [ value => value ? true : 'Nome é obrigatório' ] : []"
         v-model="name"
+        solo
+      ></v-text-field>
+
+      <v-text-field
+        label="Nª.Microchip"
+        v-model="chip"
         solo
       ></v-text-field>
 
@@ -22,13 +28,6 @@
         solo
         auto-grow
       ></v-textarea>
-
-      <v-text-field
-        label="Recompensa(Opcional)"
-        v-model="reward"
-        type="number"
-        solo
-      ></v-text-field>
 
       <v-btn
         color="primary"
@@ -52,8 +51,8 @@ export default {
    step: 2,
    valid: false,
    name: "",
+   chip: "",
    description: "",
-   reward: ""
  }),
  props: {
    currentStep: {
@@ -68,7 +67,7 @@ export default {
       this.$store.dispatch('post/setPostToCreate', {
         name: this.name,
         description: this.description,
-        reward: this.reward,
+        chip: this.chip,
       })
       this.$emit("next")
      }
@@ -76,6 +75,11 @@ export default {
    previous(){
      this.$emit("previous")
    }
+ },
+ computed: {
+  isLost(){
+    return this.$store.state.post.postToCreate.situation == 'lost'
+  }
  }
 }
 </script>

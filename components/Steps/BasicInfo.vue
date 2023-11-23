@@ -30,6 +30,13 @@
           v-model="gender"
           solo
         ></v-select>
+        <v-text-field
+          v-if="situation == 'lost'"
+          label="Recompensa(Opcional)"
+          v-model="reward"
+          type="number"
+          solo
+        ></v-text-field>
         <v-btn
           color="primary"
           @click="next"
@@ -94,7 +101,8 @@ export default {
     ],
     situation: "",
     race: "",
-    gender: ""
+    gender: "",
+    reward: ""
   }),
   props: {
     currentStep: {
@@ -111,6 +119,7 @@ export default {
           situation: this.situation,
           race: this.race,
           gender: this.gender,
+          reward: this.reward
         })
         this.$emit("next")
       }

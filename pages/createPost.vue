@@ -48,6 +48,7 @@ export default {
         const params = {...this.$store.state.post.postToCreate}
         params.image = await this.uploadFile(params.image)
         params.created = new Date()
+        params.userId = this.$store.state.auth.uid
         this.$fire.firestore.collection('posts').add(params)
         this.alertText = "Sua publicação foi cadastrada com sucesso!"
       } catch(e) {
@@ -58,7 +59,7 @@ export default {
     },
     uploadFile(image){
       return new Promise((resolve, reject)=>{
-        const path = `${this.$store.state.auth.uid}/this.image.name`
+        const path = `${this.$store.state.auth.uid}/${this.image.name}`
         const storageRef = this.$fire.storage.ref(path).put(image);
         storageRef.on(`state_changed`, snapshot=>{
           this.uploadValue = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
