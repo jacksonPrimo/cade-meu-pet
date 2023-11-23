@@ -9,7 +9,6 @@ export interface Post {
   name: String
   description: String
   reward: Number
-  age: number
   gender: String
   race: String
   situation: Situation

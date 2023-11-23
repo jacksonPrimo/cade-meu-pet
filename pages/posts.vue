@@ -131,32 +131,15 @@ export default {
     found: true,
     lost: true,
     sort: "activity",
-    posts: [
-      {
-        image: 'https://hypescience.com/wp-content/uploads/2010/09/cachorronariz.jpg',
-        id: '123dadadadagfa',
-        name: 'Nina',
-        age: 11,
-        sex: 'F',
-        race: 'Viralata',
-        situation: 'lost',
-        created: new Date().toLocaleString(),
-        address_lat: "",
-        address_long: "",
-      },
-      {
-        image: 'https://www.blupet.com.br/uploads/pets/10731/1073105082013115549000000.jpg',
-        id: '123dadadadagfa',
-        name: 'poly',
-        age: 11,
-        sex: 'F',
-        race: 'Viralata',
-        situation: 'found',
-        created: new Date().toLocaleString()
-      }
-    ],
+    posts: [],
     selectedPost: null
   }),
+  async mounted(){
+    const query = this.$fire.firestore.collection('posts').orderBy('name').startAt(0).limit(16)
+    query.get().then(posts=>{
+      posts.forEach(doc=>this.posts.push({id: doc.id, ...doc.data()}))
+    })
+  }
 }
 </script>
 

@@ -16,7 +16,7 @@
         id: {{post.id}}
       </span>
       <span>
-        postado há: {{ post.created }}
+        postado há: {{ createdAt }}
       </span>
     </v-card-subtitle>
 
@@ -49,6 +49,9 @@
         required: true,
       },
     },
+    mounted(){
+      console.log(this.post.created)
+    },
     computed: {
       styleSituation(){
         switch(this.post.situation){
@@ -68,6 +71,9 @@
       },
       sex(){
         return this.post.sex == 'F' ? 'Fêmea' : 'Macho'
+      },
+      createdAt(){
+        return this.post.created
       }
     }
   }

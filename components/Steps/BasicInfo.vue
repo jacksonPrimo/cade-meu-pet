@@ -20,7 +20,7 @@
           :items="specieOptions"
           :rules="[ value => value ? true : 'Espécie é obrigatório' ]"
           label="Espécie"
-          v-model="specie"
+          v-model="race"
           solo
         ></v-select>
         <v-select
@@ -93,7 +93,7 @@ export default {
       },
     ],
     situation: "",
-    specie: "",
+    race: "",
     gender: ""
   }),
   props: {
@@ -109,7 +109,7 @@ export default {
       if(this.valid) {
         this.$store.dispatch('post/setPostToCreate', {
           situation: this.situation,
-          specie: this.specie,
+          race: this.race,
           gender: this.gender,
         })
         this.$emit("next")

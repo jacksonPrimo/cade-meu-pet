@@ -47,6 +47,7 @@ export default {
       try {
         const params = {...this.$store.state.post.postToCreate}
         params.image = await this.uploadFile(params.image)
+        params.created = new Date()
         this.$fire.firestore.collection('posts').add(params)
         this.alertText = "Sua publicação foi cadastrada com sucesso!"
       } catch(e) {
