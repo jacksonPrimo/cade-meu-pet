@@ -12,17 +12,13 @@
     </v-img>
 
     <v-card-subtitle class="pb-0">
-      <span class="mr-2">
-        id: {{post.id}}
-      </span>
       <span>
         postado há: {{ createdAt }}
       </span>
     </v-card-subtitle>
 
     <v-card-text class="text--primary">
-      <div>Idade: {{ post.age }} anos</div>
-      <div>Sexo: {{sex}}</div>
+      <div>Sexo: {{gender}}</div>
       <div>Raça: {{ post.race }}</div>
     </v-card-text>
 
@@ -67,13 +63,41 @@
               icon: 'mdi-paw',
               title: 'Procurando Tutor'
             }
+          case 'adoption':
+            return {
+              color: '#FFD600',
+              icon: 'mdi-rabbit',
+              title: 'Para adoção'
+            }
         }
       },
-      sex(){
-        return this.post.sex == 'F' ? 'Fêmea' : 'Macho'
+      gender(){
+        return this.post.gender == 'F' ? 'Fêmea' : 'Macho'
       },
       createdAt(){
-        return this.post.created
+        const dataAtual = new Date();
+        const diferenca = dataAtual.getTime() - this.post.created.toDate().getTime();
+
+        const segundos = Math.floor(diferenca / 1000);
+        const minutos = Math.floor(segundos / 60);
+        const horas = Math.floor(minutos / 60);
+        const dias = Math.floor(horas / 24);
+        const meses = Math.floor(dias / 30);
+        const anos = Math.floor(meses / 12);
+
+        if (anos > 0) {
+          return `${anos} ano${anos > 1 ? 's' : ''} atrás`;
+        } else if (meses > 0) {
+          return `${meses} mês${meses > 1 ? 'es' : ''} atrás`;
+        } else if (dias > 0) {
+          return `${dias} dia${dias > 1 ? 's' : ''} atrás`;
+        } else if (horas > 0) {
+          return `${horas} hora${horas > 1 ? 's' : ''} atrás`;
+        } else if (minutos > 0) {
+          return `${minutos} minuto${minutos > 1 ? 's' : ''} atrás`;
+        } else {
+          return `${segundos} segundo${segundos !== 1 ? 's' : ''} atrás`;
+        }
       }
     }
   }
