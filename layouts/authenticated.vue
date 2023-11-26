@@ -105,12 +105,11 @@ export default {
     })
   },
   async beforeMount(){
-    this.$store.dispatch('auth/initialState')
-    if(!this.authenticated) this.$router.push('/')
+    if(!this.$fire.auth.currentUser) this.$router.push('/')
   },
   methods: {
     logout(){
-      this.$store.dispatch('auth/signOut')
+      this.$fire.auth.signOut()
       this.$router.push('/')
     }
   }

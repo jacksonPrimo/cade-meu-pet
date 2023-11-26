@@ -37,9 +37,7 @@ export default {
     })
   },
   async beforeMount(){
-    this.$store.dispatch('auth/initialState')
-    const authenticated = await this.authenticated
-    if(authenticated) this.$router.push('/posts')
+    if(this.$fire.auth.currentUser) this.$router.push('/posts')
   },
   methods: {}
 }
@@ -84,7 +82,7 @@ export default {
 
 .second-column {
   border-radius: 20px;
-  background-image: url("../static/images/login.jpg");
+  background-image: url("../static/images/login.svg");
   /* Imagem de <a href="https://br.freepik.com/fotos-gratis/ai-gerado-de-cachorro-labrador-retriever_58598246.htm#query=cachorro&position=19&from_view=search&track=sph">Freepik</a> */
   background-position: center;
   background-repeat: no-repeat;

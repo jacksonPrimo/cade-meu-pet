@@ -57,6 +57,8 @@
 </template>
 
 <script>
+import { GoogleAuthProvider } from 'firebase/auth'
+
 export default {
   name: 'SigninForm',
   data: () => ({
@@ -85,23 +87,25 @@ export default {
   }),
   methods: {
     async signInWithGoogle() {
-      const result = await this.$store.dispatch('auth/signInWithGoogle')
-      if(result?.error) {
-        alert('Ocorreu um erro inesperado')
-        console.log(result.error)
-      } else {
+      try {
+        const provider = new GoogleAuthProvider();
+        await this.$fire.auth.signInWithPopup(provider)
         this.$router.push('/posts')
+      } catch(e) {
+        console.log(e)
+        alert('Desculpe ocorreu um erro ao tentar realizar o login')
       }
     },
 
     async signinWithForm(){
       this.$refs.signinForm.validate()
       if(this.valid) {
-        const result = await this.$store.dispatch('auth/signInWithEmailAndPassword', { email: this.email, password: this.password })
-        if(result?.error) {
-          alert('Usuário ou senha incorretos')
-        } else {
+        try {
+          await this.$fire.auth.signInWithEmailAndPassword(this.email, this.password)
           this.$router.push('/posts')
+        } catch(e) {
+          console.log(e)
+          alert('Desculpe ocorreu um erro ao tentar realizar o login')
         }
       }
     },  
@@ -109,6 +113,9 @@ export default {
     changeToSignup(){
       this.$emit('changeToSignup')
     }
+  },
+  mounted(){
+    console.log(this.$fire.auth.currentUser)
   }
 }
 </script>
