@@ -20,7 +20,9 @@
             dense
             prepend-inner-icon="mdi-account"
             v-model="name"
-            :rules="nameRules"
+            :rules="[
+              value => value ? true : 'Nome é obrigatório',
+            ]"
             label="Nome Completo"
             required
           ></v-text-field>
@@ -28,25 +30,36 @@
 
         <v-row>
           <v-text-field
+            v-model="password"
+            :rules="[
+              value => value ? true : 'A senha é obrigatória',
+            ]"
+            :type="showPassword ? 'text' : 'password'"
+            @click:append="showPassword = !showPassword"
+            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            prepend-inner-icon="mdi-lock"
+            label="Password"
+            required
             solo
             dense
-            v-model="password"
-            :rules="passwordRules"
-            label="Password"
-            prepend-inner-icon="mdi-lock-outline"
-            required
           ></v-text-field>
         </v-row>
 
         <v-row>
           <v-text-field
+            v-model="passwordConfirmation"
+            :rules="[
+              value => value ? true : 'Confirmação é obrigatória',
+              value => value == password ? true : 'Os campos não coincidem'
+            ]"
+            :type="showConfirmPassword ? 'text' : 'password'"
+            @click:append="showConfirmPassword = !showConfirmPassword"
+            :append-icon="showConfirmPassword ? 'mdi-eye' : 'mdi-eye-off'"
+            prepend-inner-icon="mdi-lock"
+            label="Password Confirmation"
+            required
             solo
             dense
-            v-model="passwordConfirmation"
-            :rules="passwordConfirmationRules"
-            label="Password Confirmation"
-            prepend-inner-icon="mdi-lock-outline"
-            required
           ></v-text-field>
         </v-row>
         <v-row v-if="signinError">
@@ -89,31 +102,11 @@ export default {
   name: 'SignupForm',
   data: () => ({
     valid: false,
+    showPassword: false,
+    showConfirmPassword: false,
     name: '',
-    nameRules: [
-      value => {
-        if (value) return true
-        return 'O nome é necessária'
-      },
-    ],
     password: '',
-    passwordRules: [
-      value => {
-        if (value) return true
-        return 'A senha é necessária'
-      },
-    ],
     passwordConfirmation: '',
-    passwordConfirmationRules: [
-      value => {
-        if (value) return true
-        return 'A confirmação de senha é necessária'
-      },
-      value => {
-        if (value !== '') return true
-        return 'As senhas não coincidem'
-      },
-    ],
     email: '',
     emailRules: [
       value => {
@@ -160,7 +153,6 @@ export default {
   
     finishSignup(authData){
       const params = {
-        email: authData.email,
         name: authData.displayName
       }
       this.$fire.firestore.collection('users').doc(authData.uid).set(params)
