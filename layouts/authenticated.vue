@@ -11,7 +11,6 @@
         <v-btn 
           v-for="(item, i) in items"
           plain 
-          value="recent" 
           :key="i"
           :to="item.to"
           router
@@ -23,7 +22,6 @@
 
         <v-btn 
           plain 
-          value="recent" 
           router
           exact
           color="red"
@@ -72,7 +70,6 @@
   </v-app>
 </template>
 <script>
-import { mapGetters } from 'vuex'
 
 export default {
   name: 'AuthenticatedLayout',
@@ -98,11 +95,6 @@ export default {
       ],
       title: 'Pet Connection'
     }
-  },
-  computed: {
-    ...mapGetters({
-      authenticated: 'auth/authenticated',
-    })
   },
   async beforeMount(){
     if(!this.$fire.auth.currentUser) this.$router.push('/')

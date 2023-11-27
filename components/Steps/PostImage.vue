@@ -32,7 +32,7 @@ export default {
  name: 'PostImage',
  data: () => ({
    step: 3,
-   image: ""
+   image: null
  }),
  props: {
    currentStep: {
