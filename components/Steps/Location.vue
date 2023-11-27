@@ -89,12 +89,12 @@ export default {
   methods: {
     next(){
       this.$refs.addressForm.validate()
-      if(this.valid) {
+      if(this.formValid && this.address.lat && this.address.lng) {
         this.$store.dispatch('post/setPostToCreate', {
           address: this.address
         })
         this.$emit("next")
-      } else if(this.address.lat || this.address.lng){
+      } else if(!this.address.lat || !this.address.lng){
         alert('selecione uma localização')
       }
     },
@@ -158,6 +158,8 @@ export default {
       }
     },
     selectPosition(lat, lng){
+      this.address['lat'] = lat
+      this.address['lng'] = lng
       if(!this.marker) {
         this.marker = L.marker([lat, lng])
         this.marker.addTo(this.map);
