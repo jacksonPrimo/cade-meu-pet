@@ -25,7 +25,8 @@
 import BasicInfo from '@/components/Steps/BasicInfo.vue'
 import Identify from '@/components/Steps/Identify.vue'
 import Location from '@/components/Steps/Location.vue'
-import PostImage from '~/components/Steps/PostImage.vue'
+import PostImage from '@/components/Steps/PostImage.vue'
+import UploadImage from '@/utils/uploadImage'
 
 export default {
   components: { BasicInfo, Identify, Location, PostImage },
@@ -58,20 +59,8 @@ export default {
       }
     },
     uploadFile(image){
-      return new Promise((resolve, reject)=>{
-        const path = `${this.$fire.auth.currentUser.uid}/${this.randomId()}`
-        const storageRef = this.$fire.storage.ref(path).put(image);
-        storageRef.on(`state_changed`, snapshot=>{
-          this.uploadValue = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-        }, error=>{
-          reject()
-        }, () => {
-          this.uploadValue=100;
-          storageRef.snapshot.ref.getDownloadURL().then((url)=>{
-            resolve(url)
-          });
-        });
-      })
+      const path = `${this.$fire.auth.currentUser.uid}/${this.randomId()}`
+      return UploadImage(image, path, this)
     },
     randomId() {
       let result = '';
