@@ -19,7 +19,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 import SigninForm from '../components/SigninForm.vue'
 import SignupForm from '../components/SignupForm.vue'
 
@@ -31,11 +30,6 @@ export default {
   data: () => ({
     signin: true,
   }),
-  computed: {
-    ...mapGetters({
-      authenticated: 'auth/authenticated',
-    })
-  },
   async beforeMount(){
     if(this.$fire.auth.currentUser) this.$router.push('/posts')
   },

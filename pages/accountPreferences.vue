@@ -8,14 +8,16 @@
       <v-form ref="accountPreferenceForm" v-model="valid">
         <div class="input-image">
           <img :src="profileImage ? profileImage : 'images/profile.svg'" class="profile-image">
-          <v-file-input
-            prepend-icon="mdi-camera"
-            accept="image/*"
-            label="File input"
-            v-model="imageFile"
-          ></v-file-input>
           <!-- <a href="https://br.freepik.com/vetores-gratis/ilustracao-do-conceito-de-processamento_7126211.htm#query=config&position=9&from_view=search&track=sph&uuid=69198325-e013-401a-8c54-941a64a8a532">Imagem de storyset</a> no Freepik -->
         </div>
+        <v-file-input
+          solo
+          prepend-icon=""
+          prepend-inner-icon="mdi-camera"
+          accept="image/*"
+          label="File input"
+          v-model="imageFile"
+        ></v-file-input>
 
         <v-text-field
           v-if="authType == 'emailAndPassword'"
@@ -84,8 +86,9 @@
       </v-form>
 
       <v-switch
-        v-model="theme"
+        v-model="darkTheme"
         label="Tema escuro"
+        @change="changeDarkTheme"
       ></v-switch>
 
       <v-switch
@@ -97,6 +100,7 @@
 </template>
 
 <script>
+import UploadImage from '@/utils/uploadImage'
 export default {
   name: 'AdoptionPage',
   layout: "authenticated",
@@ -106,7 +110,7 @@ export default {
     authType: "emailAndPassword",
     showPassword: false,
     showConfirmPassword: false,
-    theme: false,
+    darkTheme: false,
     notifications: false,
     imageFile: null,
     name: '',
@@ -124,22 +128,26 @@ export default {
       if(data) {
         this.name = data.name
         this.phone = data.phone
+        this.profileImage = data.profileImage
       }
     })
+    this.darkTheme = !!localStorage.getItem('dark')
   },
   methods: {
-    submit(){
+    async submit(){
       this.$refs.accountPreferenceForm.validate()
       if(this.valid){ 
         this.changeEmail()
         this.changePassword()
+        await this.uploadImageFile()
         this.updateUser()
       }
     },
-    changePassword(){
-      if(this.password && this.confirmPassword) {
+    async changePassword(){
+      if(this.password && this.passwordConfirmation) {
         try {
-          this.$fire.auth.currentUser.updatePassword(this.password)
+          const result = await this.$fire.auth.currentUser.updatePassword(this.password)
+          console.log("password", result)
         } catch(e) {
           console.log(e)
         }
@@ -155,15 +163,33 @@ export default {
         console.log(e)
       }
     },
+    async uploadImageFile(){
+      const uid = this.$fire.auth.currentUser.uid
+      if(this.imageFile) {
+        const path = `${uid}/profile`
+        this.profileImage = await UploadImage(this.imageFile, path, this)
+      }
+    },
     async updateUser(){
+      const uid = this.$fire.auth.currentUser.uid
       try {
-        const result = await this.$fire.firestore.collection('users').doc(this.$fire.auth.currentUser.uid).set({
+        const result = await this.$fire.firestore.collection('users').doc(uid).set({
           name: this.name,
           phone: this.phone,
+          profileImage: this.profileImage
         })
         console.log(result)
       } catch(e) {
         console.log(e)
+      }
+    },
+    changeDarkTheme(value){
+      if(value == false) {
+        localStorage.removeItem('dark')
+        this.$vuetify.theme.dark = false
+      } else {
+        localStorage.setItem('dark', 'yes')
+        this.$vuetify.theme.dark = true
       }
     }
   }
@@ -175,5 +201,10 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+.profile-image {
+  margin-top: 10px;
+  width: 150px;
+  border-radius: 50%;
 }
 </style>

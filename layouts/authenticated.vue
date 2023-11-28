@@ -98,6 +98,8 @@ export default {
   },
   async beforeMount(){
     if(!this.$fire.auth.currentUser) this.$router.push('/')
+    const dark = !!localStorage.getItem('dark')
+    this.$vuetify.theme.dark = dark
   },
   methods: {
     logout(){
