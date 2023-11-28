@@ -1,127 +1,7 @@
 <template>
   <v-row>
-    <v-col sm="12" md="3">
-      <div class="filter-title">
-        Filtros
-      </div>
-
-      <div class="filter mb-3">
-        <span class="filter-subtitle">
-          Identificação
-        </span>
-        
-        <div>
-          <v-text-field
-            outlined
-            dense
-            v-model="filters.name"
-            label="Nome"
-          ></v-text-field>
-
-          <v-text-field
-            outlined
-            dense
-            v-model="filters.chip"
-            label="Chip Subcutaneo"
-          ></v-text-field>
-        </div>
-
-      </div>
-
-      <div class="filter">
-        <span class="filter-subtitle">
-          Endereço
-        </span>
-        
-        <div>
-          <v-text-field
-            outlined
-            dense
-            v-model="filters.zipcode"
-            label="Cep"
-          ></v-text-field>
-          <v-subheader class="pl-0">
-            Distancia máxima {{filters.zipcodeDistance}}km
-          </v-subheader>
-          <v-slider
-            step="10"
-            max="50"
-            v-model="filters.zipcodeDistance"
-          ></v-slider>
-        </div>
-
-      </div>
-      
-      <div class="filter">
-        <span class="filter-subtitle">
-          Situação do pet
-        </span>
-        <div>
-          <v-combobox
-            multiple
-            small-chips
-            :items="situationOptions"
-            v-model="filters.situation"
-          ></v-combobox>
-        </div>
-      </div>
-
-      <div class="filter">
-        <span class="filter-subtitle">
-          Espécie
-        </span>
-        <div>
-          <v-combobox
-            multiple
-            small-chips
-            :items="specieOptions"
-            v-model="filters.race"
-          ></v-combobox>
-        </div>
-      </div>
-
-      <div class="filter mt-4">
-        <span class="filter-subtitle">
-          Gênero
-        </span>
-        <div>
-          <v-radio-group v-model="filters.gender">
-            <v-radio
-              label="Macho"
-              value="M"
-            ></v-radio>
-
-            <v-radio
-              label="Fêmea"
-              value="F"
-            ></v-radio>
-          </v-radio-group>
-        </div>
-      </div>
-
-      <div class="filter mt-4">
-        <span class="filter-subtitle">
-          Ordenar por
-        </span>
-        <div>
-          <v-radio-group v-model="filters.sort">
-            <v-radio
-              label="Atividade"
-              value="created"
-            ></v-radio>
-
-            <v-radio
-              disabled
-              label="Distance"
-              value="distance"
-            ></v-radio>
-          </v-radio-group>
-        </div>
-      </div>
-
-      <div class="filter mt-4">
-        <v-btn outlined color="primary" @click="getPosts">Filtrar</v-btn>
-      </div>
+    <v-col sm="12" md="3" class="filterContainer">
+      <filters @filter="filter"></filters>
     </v-col>
     <v-col sm="12" md="9">
       <v-row v-if="posts.length">
@@ -143,92 +23,43 @@
 <script>
 import PostCard from '@/components/Card.vue'
 import PostModal from '@/components/PostModal.vue'
+import Filters from '@/components/Filters.vue'
 
 export default {
   name: 'LostAndFoundPage',
   layout: "authenticated",
   components: {
     PostCard,
-    PostModal
+    PostModal,
+    Filters
   },
   data: ()=>({
     page: 0,
     limit: 16,
-    situationOptions: [
-      {
-        text: "Perdido",
-        value: "lost"
-      },
-      {
-        text: "Encontrado",
-        value: "found"
-      },
-      {
-        text: "Para adoção",
-        value: "adoption"
-      },
-    ],
-    specieOptions: [
-      {
-        text: "Cão",
-        value: "dog"
-      },
-      {
-        text: "Gato",
-        value: "cat"
-      },
-      {
-        text: "Coelho",
-        value: "rabbit"
-      },
-      {
-        text: "Passaro",
-        value: "bird"
-      },
-      {
-        text: "Outro",
-        value: "other"
-      },
-    ],
-    genderOptions: [
-      {
-        text: "Macho",
-        value: "M"
-      },
-      {
-        text: "Fêmea",
-        value: "F"
-      },
-    ],
-    filters: {
-      name: '',
-      chip: '',
-      zipcode: '',
-      zipcodeDistance: 0,
-      situation: [],
-      race: [],
-      sort: "created",
-      gender: ''
-    },
+    filters: {},
     posts: [],
     selectedPost: null
   }),
   mounted(){
-    this.getPosts()
+    this.getPosts({})
   },
   methods: {
+    filter(filters){
+      this.filters = filters
+      this.getPosts()
+    },
     getPosts(){
+      console.log("filters", this.filters)
       let query = this.$fire.firestore.collection('posts')
       if(this.filters.name) query = query.where('name', '==', this.filters.name)
       if(this.filters.chip) query = query.where('chip', '==', this.filters.chip)
       if(this.filters.zipcode) query = query.where('zipcode', '==', this.filters.zipcode)
       if(this.filters.gender) query = query.where('gender', '==', this.filters.gender)
-      if(this.filters.situation.race) query = query.where('race', 'in', extractValues(this.filters.race))
-      if(this.filters.situation.length) query = query.where('situation', 'in', extractValues(this.filters.situation))
+      if(this.filters.race?.length) query = query.where('race', 'in', this.extractValues(this.filters.race))
+      if(this.filters.situation?.length) query = query.where('situation', 'in', this.extractValues(this.filters.situation))
       const skip = this.page * this.limit
-      query.orderBy(this.filters.sort).startAt(skip).limit(this.limit)
+      query.orderBy(this.filters.sort || 'created').startAt(skip).limit(this.limit)
       query.get().then(posts=>{
-        console.log(posts)
         this.posts = []
         posts.forEach(doc=>this.posts.push({id: doc.id, ...doc.data()}))
       })
@@ -241,26 +72,33 @@ export default {
 </script>
 
 <style lang="scss">
-.filter-title {
-  font-weight: bold;
-  font-size: 24px;
+::-webkit-scrollbar {
+  width: 10px;
 }
-
-.filter-subtitle {
-  font-weight: 500;
-  font-size: 18px;
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
 }
-
-.filter {
-  .v-text-field__details, .v-messages {
-    display: none;
-  }
+::-webkit-scrollbar-thumb {
+  background: #888; 
+  border-radius: 10px;
 }
-
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+::-webkit-scrollbar-button {
+  height: 5px;
+}
 .postContainer {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+}
+
+@media only screen and (min-width: 960px) {
+  .filterContainer {
+    height: 100vh;
+    overflow: scroll;
+  }
 }
 
 </style>
