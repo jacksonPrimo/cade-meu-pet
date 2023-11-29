@@ -183,8 +183,10 @@ export default {
       race: [],
       sort: "created",
       gender: '',
-      lat: '',
-      lng: ''
+      biggerThanLat: '',
+      smallerThanLat: '',
+      biggerThanLng: '',
+      smallerThanLng: ''
     },
   }),
   mounted(){
@@ -208,8 +210,17 @@ export default {
       this.map.on('geosearch/showlocation', this.handleSelectedLocation)
     },
     handleSelectedLocation(e){
-      this.filters['lat'] = e.location.y
-      this.filters['lng'] = e.location.x
+      const lat = e.location.y
+      const lng = e.location.x
+      const radius = 5;
+      const latDegrees = radius / 111
+      const lngDegrees = radius / (111 * Math.cos(lat * (Math.PI / 180)))
+
+      this.filters['biggerThanLat'] = lat - latDegrees
+      this.filters['smallerThanLat'] = lat + latDegrees
+
+      this.filters['biggerThanLng'] = lng - lngDegrees
+      this.filters['smallerThanLng'] = lng + lngDegrees
     },
     filter() {
       this.$emit('filter', this.filters)

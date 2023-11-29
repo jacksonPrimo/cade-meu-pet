@@ -57,7 +57,14 @@ export default {
       if(this.filters.gender) query = query.where('gender', '==', this.filters.gender)
       if(this.filters.race?.length) query = query.where('race', 'in', this.extractValues(this.filters.race))
       if(this.filters.situation?.length) query = query.where('situation', 'in', this.extractValues(this.filters.situation))
+      // aqui quebra devido ao firebase limitar o uso do filtro de maior ou menos apenas para um campo
+      if(this.filters.biggerThanLat) query = query.where('address.lat', '>=', this.filters.biggerThanLat)
+      if(this.filters.smallerThanLat) query = query.where('address.lat', '<=', this.filters.smallerThanLat)
+      if(this.filters.biggerThanLng) query = query.where('address.lng', '>=', this.filters.biggerThanLng)
+      if(this.filters.smallerThanLng) query = query.where('address.lng', '<=', this.filters.smallerThanLng)
+
       const skip = this.page * this.limit
+      // aqui quebra devido ao firebase limitar o ordenamento ao campo usando o filtro maior ou menor que
       query.orderBy(this.filters.sort || 'created').startAt(skip).limit(this.limit)
       query.get().then(posts=>{
         this.posts = []
