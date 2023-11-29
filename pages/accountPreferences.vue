@@ -94,6 +94,7 @@
       <v-switch
         v-model="notifications"
         label="Ativar notificações"
+        @change="changeActiveNotifications"
       ></v-switch>
     </v-col>
   </v-row>
@@ -126,9 +127,10 @@ export default {
     this.$fire.firestore.collection('users').doc(user.uid).get().then(result=> {
       const data = result.data()
       if(data) {
-        this.name = data.name
-        this.phone = data.phone
-        this.profileImage = data.profileImage
+        this.name = data.name || ''
+        this.phone = data.phone || ''
+        this.profileImage = data.profileImage || ''
+        this.notifications = data.notifications || false
       }
     })
     this.darkTheme = !!localStorage.getItem('dark')
@@ -140,7 +142,11 @@ export default {
         this.changeEmail()
         this.changePassword()
         await this.uploadImageFile()
-        this.updateUser()
+        this.updateUser({
+          name: this.name,
+          phone: this.phone,
+          profileImage: this.profileImage,
+        })
       }
     },
     async changePassword(){
@@ -170,14 +176,10 @@ export default {
         this.profileImage = await UploadImage(this.imageFile, path, this)
       }
     },
-    async updateUser(){
+    async updateUser(params){
       const uid = this.$fire.auth.currentUser.uid
       try {
-        const result = await this.$fire.firestore.collection('users').doc(uid).set({
-          name: this.name,
-          phone: this.phone,
-          profileImage: this.profileImage
-        })
+        const result = await this.$fire.firestore.collection('users').doc(uid).update(params)
         console.log(result)
       } catch(e) {
         console.log(e)
@@ -191,6 +193,9 @@ export default {
         localStorage.setItem('dark', 'yes')
         this.$vuetify.theme.dark = true
       }
+    },
+    changeActiveNotifications(value){
+      this.updateUser({notifications: value})
     }
   }
 }
@@ -203,7 +208,7 @@ export default {
   align-items: center;
 }
 .profile-image {
-  margin-top: 10px;
+  margin: 15px 0;
   width: 150px;
   border-radius: 50%;
 }
