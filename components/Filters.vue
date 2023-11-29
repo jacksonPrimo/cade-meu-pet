@@ -15,6 +15,7 @@
           dense
           v-model="filters.name"
           label="Nome"
+          class="my-2"
         ></v-text-field>
 
         <v-text-field

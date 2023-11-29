@@ -97,7 +97,7 @@ export default {
 @media only screen and (min-width: 960px) {
   .filterContainer {
     height: 100vh;
-    overflow: scroll;
+    overflow-y: scroll;
   }
 }
 
