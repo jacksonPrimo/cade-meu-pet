@@ -190,7 +190,8 @@ export default {
       biggerThanLng: '',
       smallerThanLng: ''
     },
-    circle: null
+    circle: null,
+    coords: null
   }),
   mounted(){
     this.initializeMap()
@@ -214,12 +215,13 @@ export default {
       this.circle = L.circle([-7.080158, -41.414843], {
         color: 'green',
         fillColor: 'green',
-        fillOpacity: 0.3,
+        fillOpacity: 0.2,
         radius: this.filters.distance * 1000
       })
       this.circle.addTo(this.map);
     },
     handleSelectedLocation(e){
+      this.coords = e
       const lat = e.location.y
       const lng = e.location.x
       this.circle.setLatLng([lat, lng])
@@ -239,6 +241,9 @@ export default {
     changeRadius(){
       if (this.circle) {
         this.circle.setRadius(this.filters.distance * 1000)
+      }
+      if(this.coords) {
+        this.handleSelectedLocation(this.coords)
       }
     }
   }
