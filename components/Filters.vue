@@ -198,7 +198,8 @@ export default {
   },
   methods: {
     initializeMap() {
-      this.map = L.map(this.$refs.map).setView([-7.080158, -41.414843], 13)
+      this.map = L.map(this.$refs.map).setView([-12.256545945045046, 
+-55.52556684608532], 4)
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
       }).addTo(this.map)
@@ -212,19 +213,11 @@ export default {
       })
       this.map.addControl(searchControl)
       this.map.on('geosearch/showlocation', this.handleSelectedLocation)
-      this.circle = L.circle([-7.080158, -41.414843], {
-        color: 'green',
-        fillColor: 'green',
-        fillOpacity: 0.2,
-        radius: this.filters.distance * 1000
-      })
-      this.circle.addTo(this.map);
     },
     handleSelectedLocation(e){
       this.coords = e
       const lat = e.location.y
       const lng = e.location.x
-      this.circle.setLatLng([lat, lng])
       const radius = this.filters.distance
       const latDegrees = radius / 111
       const lngDegrees = radius / (111 * Math.cos(lat * (Math.PI / 180)))
@@ -234,6 +227,18 @@ export default {
 
       this.filters['biggerThanLng'] = lng - lngDegrees
       this.filters['smallerThanLng'] = lng + lngDegrees
+
+      if(this.circle) {
+        this.circle.setLatLng([lat, lng])
+      } else {
+        this.circle = L.circle([lat, lng], {
+          color: 'green',
+          fillColor: 'green',
+          fillOpacity: 0.2,
+          radius: this.filters.distance * 1000
+        })
+        this.circle.addTo(this.map);
+      }
     },
     filter() {
       this.$emit('filter', this.filters)
