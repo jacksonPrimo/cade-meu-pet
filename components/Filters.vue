@@ -40,9 +40,10 @@
         </v-subheader>
         <v-slider
           step="5"
-          max="50"
+          max="100"
           min="5"
           v-model="filters.distance"
+          @change="changeRadius"
         ></v-slider>
       </div>
 
@@ -189,6 +190,7 @@ export default {
       biggerThanLng: '',
       smallerThanLng: ''
     },
+    circle: null
   }),
   mounted(){
     this.initializeMap()
@@ -209,10 +211,18 @@ export default {
       })
       this.map.addControl(searchControl)
       this.map.on('geosearch/showlocation', this.handleSelectedLocation)
+      this.circle = L.circle([-7.080158, -41.414843], {
+        color: 'green',
+        fillColor: 'green',
+        fillOpacity: 0.3,
+        radius: this.filters.distance * 1000
+      })
+      this.circle.addTo(this.map);
     },
     handleSelectedLocation(e){
       const lat = e.location.y
       const lng = e.location.x
+      this.circle.setLatLng([lat, lng])
       const radius = this.filters.distance
       const latDegrees = radius / 111
       const lngDegrees = radius / (111 * Math.cos(lat * (Math.PI / 180)))
@@ -225,6 +235,11 @@ export default {
     },
     filter() {
       this.$emit('filter', this.filters)
+    },
+    changeRadius(){
+      if (this.circle) {
+        this.circle.setRadius(this.filters.distance * 1000)
+      }
     }
   }
 }
