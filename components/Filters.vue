@@ -39,8 +39,9 @@
           Distancia máxima {{filters.distance}}km
         </v-subheader>
         <v-slider
-          step="10"
+          step="5"
           max="50"
+          min="5"
           v-model="filters.distance"
         ></v-slider>
       </div>
@@ -178,7 +179,7 @@ export default {
     filters: {
       name: '',
       chip: '',
-      distance: 0,
+      distance: 5,
       situation: [],
       race: [],
       sort: "created",
@@ -212,7 +213,7 @@ export default {
     handleSelectedLocation(e){
       const lat = e.location.y
       const lng = e.location.x
-      const radius = 5;
+      const radius = this.filters.distance
       const latDegrees = radius / 111
       const lngDegrees = radius / (111 * Math.cos(lat * (Math.PI / 180)))
 

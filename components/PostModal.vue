@@ -28,18 +28,16 @@
           </v-img>
         </v-card-section>
         <v-card-section>
-        </v-card-section>
-        <v-card-section>
           <v-card-title>
             Localização
           </v-card-title>
           <div id="map-wrap" style="height: 50vh;">
             <client-only>
-              <l-map :zoom=13 :center="[-7.080158, -41.414843]"  @update:bounds="handleEvent" @click="clicked">
+              <l-map :zoom=13 :center="[post.address.lat, post.address.lng]"  @update:bounds="handleEvent" @click="clicked">
                 <l-tile-layer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"></l-tile-layer>
-                <l-marker :lat-lng="[-7.080158, -41.414843]"></l-marker>
+                <l-marker :lat-lng="[post.address.lat, post.address.lng]"></l-marker>
                 <l-circle
-                  :lat-lng="[-7.080158, -41.414843]"
+                  :lat-lng="[post.address.lat, post.address.lng]"
                   :radius="4500"
                   color="green"
                 />
@@ -47,7 +45,7 @@
             </client-only>
           </div>
         </v-card-section>
-        <v-card-section style="background-color: white;">
+        <v-card-section>
           <v-card-title>Comentarios</v-card-title>
           <div class="pl-2 pr-2">
             <v-textarea
