@@ -6,7 +6,7 @@
     <v-col sm="12" md="9">
       <v-row v-if="posts.length">
         <v-col sm="12" md="4" lg="3" v-for="(post, index) in posts" :key="index">
-          <div @click="selectedPost = post">
+          <div class="post" @click="selectedPost = post">
             <PostCard :post="post"></PostCard>
           </div>
         </v-col>
@@ -16,7 +16,7 @@
         <v-icon x-large>mdi-emoticon-sad</v-icon>
       </div>
     </v-col>
-    <PostModal :post="selectedPost" @closeModal="selectedPost=null"></PostModal>
+    <PostModal v-if="selectedPost" :post="selectedPost" @closeModal="selectedPost=null"></PostModal>
   </v-row>
 </template>
 
@@ -106,6 +106,9 @@ export default {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+}
+.post:hover {
+  cursor: pointer;
 }
 
 @media only screen and (min-width: 960px) {
