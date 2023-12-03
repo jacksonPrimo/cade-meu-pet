@@ -198,8 +198,7 @@ export default {
   },
   methods: {
     initializeMap() {
-      this.map = L.map(this.$refs.map).setView([-12.256545945045046, 
--55.52556684608532], 4)
+      this.map = L.map(this.$refs.map).setView([-12.256545945045046, -55.52556684608532], 4)
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
       }).addTo(this.map)

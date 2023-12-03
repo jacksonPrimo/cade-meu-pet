@@ -8,7 +8,7 @@
     </v-stepper-step>
   
     <v-stepper-content :step="step">
-      <div ref="map" class="map-container"></div>
+      <selectable-map @markLocation="markLocation"></selectable-map>
       <v-form ref="addressForm" v-model="formValid" class="mt-4">
         <v-text-field
           label="Cidade"
@@ -54,18 +54,15 @@
 </template>
 
 <script>
-import L from 'leaflet'
-import 'leaflet/dist/leaflet.css'
-import 'leaflet-geosearch/dist/geosearch.css'
-import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch'
+import selectableMap from '@/components/selectableMap.vue'
 
 export default {
   name: 'Location',
+  components: {
+    selectableMap
+  },
   data: () => ({
     step: 4,
-    map: null,
-    marker: null,
-    location: null,
     formValid: false,
     address: {
       state: '',
@@ -87,9 +84,6 @@ export default {
       required: true
     }
   },
-  mounted() {
-    this.initializeMap()
-  },
   methods: {
     next(){
       this.$refs.addressForm.validate()
@@ -105,70 +99,28 @@ export default {
     previous(){
       this.$emit("previous")
     },
-    initializeMap() {
-      this.map = L.map(this.$refs.map).setView([-7.080158, -41.414843], 13)
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-      }).addTo(this.map)
-      const provider = new OpenStreetMapProvider()
-      const searchControl = new GeoSearchControl({
-        provider,
-        style: 'bar',
-        autoComplete: true,
-        autoClose: true,
-        keepResult: true,
-      })
-      this.map.on('geosearch/showlocation', this.handleSelectedLocation)
-      this.map.addControl(searchControl)
-      this.map.on('click', (e) => this.selectPosition(e.latlng.lat, e.latlng.lng));
+    markLocation(e){
+      this.address.lat = e.lat
+      this.address.lng = e.lng
+      if(e.label) this.populateFormAddressValues(e.label)
     },
-    handleSelectedLocation(e){
-      this.map.removeLayer(e.marker);
-      this.selectPosition(e.location.y, e.location.x)
-      const splittedInfo = e.location.label.split(',')
+    populateFormAddressValues(label){
+      const splittedInfo = label.split(',')
       if(splittedInfo.length == 8) {
-        this.address = {
-          street: "",
-          state: splittedInfo[4],
-          district: splittedInfo[0],
-          city: splittedInfo[1],
-          zipcode: splittedInfo[6],
-          lat: e.y,
-          lng: e.x,
-        }
+        this.address.state = splittedInfo[4]
+        this.address.district = splittedInfo[0]
+        this.address.city = splittedInfo[1]
+        this.address.zipcode = splittedInfo[6]
       } else if(splittedInfo.length == 6) {
-        this.address = {
-          street: splittedInfo[0],
-          state: splittedInfo[3],
-          district: "",
-          city: splittedInfo[1],
-          zipcode: "",
-          lat: e.y,
-          lng: e.x,
-        }
+        this.address.street = splittedInfo[0]
+        this.address.state = splittedInfo[3]
+        this.address.city = splittedInfo[1]
       } else if(splittedInfo.length == 9) {
-        this.address = {
-          street: splittedInfo[0],
-          district: splittedInfo[1],
-          city: splittedInfo[2],
-          state: splittedInfo[5],
-          zipcode: splittedInfo[7],
-          lat: e.y,
-          lng: e.x,
-        }
-      } else {
-        this.address['lat'] = e.y
-        this.address['lng'] = e.x
-      }
-    },
-    selectPosition(lat, lng){
-      this.address['lat'] = lat
-      this.address['lng'] = lng
-      if(!this.marker) {
-        this.marker = L.marker([lat, lng])
-        this.marker.addTo(this.map);
-      } else {
-        this.marker.setLatLng([lat, lng])
+        this.address.street = splittedInfo[0]
+        this.address.district = splittedInfo[1]
+        this.address.city = splittedInfo[2]
+        this.address.state = splittedInfo[5]
+        this.address.zipcode = splittedInfo[7]
       }
     }
   }
