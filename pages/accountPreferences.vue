@@ -24,7 +24,7 @@
           solo
           prepend-inner-icon="mdi-email"
           v-model="email"
-          :rules="[(value) => value ? true : 'Email é um campo obrigatório']"
+          :rules="[value => value ? true : 'Email é um campo obrigatório']"
           label="Email"
           required
         ></v-text-field>
@@ -79,6 +79,7 @@
         <v-btn
           color="grey darken-4"
           @click="submit"
+          :disabled="loading"
           style="width: 100%; color: white"
         >
           Atualizar
@@ -108,7 +109,8 @@ export default {
   name: 'SigninForm',
   data: () => ({
     valid: false,
-    authType: "emailAndPassword",
+    loading: false,
+    authType: "google",
     showPassword: false,
     showConfirmPassword: false,
     darkTheme: false,
@@ -123,6 +125,7 @@ export default {
   }),
   mounted(){
     const user = this.$fire.auth.currentUser
+    this.checkIfUserHasPassword(user)
     this.email = user.email
     this.$fire.firestore.collection('users').doc(user.uid).get().then(result=> {
       const data = result.data()
@@ -136,37 +139,42 @@ export default {
     this.darkTheme = !!localStorage.getItem('dark')
   },
   methods: {
+    checkIfUserHasPassword(user){
+      const providers = user.providerData || []
+      const hasPassword = providers.some(p => p.providerId == 'password')
+      this.authType = hasPassword ? 'emailAndPassword' : 'google'
+    },
     async submit(){
       this.$refs.accountPreferenceForm.validate()
       if(this.valid){ 
-        this.changeEmail()
-        this.changePassword()
-        await this.uploadImageFile()
-        this.updateUser({
-          name: this.name,
-          phone: this.phone,
-          profileImage: this.profileImage,
-        })
+        this.loading = true
+        try {
+          await this.changeEmail()
+          await this.changePassword()
+          await this.uploadImageFile()
+          await this.updateUser({
+            name: this.name,
+            phone: this.phone,
+            profileImage: this.profileImage,
+          })
+          alert('Perfil atualizado com sucesso!')
+        } catch(e) {
+          alert('Desculpe ocorreu um erro ao tentar atualizar seu perfil!')
+          console.log(e)
+        } finally {
+          this.loading = false
+        }
       }
     },
     async changePassword(){
       if(this.password && this.passwordConfirmation) {
-        try {
-          const result = await this.$fire.auth.currentUser.updatePassword(this.password)
-          console.log("password", result)
-        } catch(e) {
-          console.log(e)
-        }
+        await this.$fire.auth.currentUser.updatePassword(this.password)
       }
     },
     async changeEmail(){
-      try {
-        if(this.email && this.email !== this.$fire.auth.currentUser.email) {
-          await this.$fire.auth.currentUser.verifyBeforeUpdateEmail(this.email)
-          alert('enviamos um link de confirmação para este novo email')
-        }
-      } catch(e) {
-        console.log(e)
+      if(this.email && this.email !== this.$fire.auth.currentUser.email) {
+        await this.$fire.auth.currentUser.verifyBeforeUpdateEmail(this.email)
+        alert('enviamos um link de confirmação para este novo email')
       }
     },
     async uploadImageFile(){
@@ -178,12 +186,7 @@ export default {
     },
     async updateUser(params){
       const uid = this.$fire.auth.currentUser.uid
-      try {
-        const result = await this.$fire.firestore.collection('users').doc(uid).update(params)
-        console.log(result)
-      } catch(e) {
-        console.log(e)
-      }
+      await this.$fire.firestore.collection('users').doc(uid).update(params)
     },
     changeDarkTheme(value){
       if(value == false) {
@@ -194,8 +197,8 @@ export default {
         this.$vuetify.theme.dark = true
       }
     },
-    changeActiveNotifications(value){
-      this.updateUser({notifications: value})
+    async changeActiveNotifications(value){
+      await this.updateUser({notifications: value})
     }
   }
 }

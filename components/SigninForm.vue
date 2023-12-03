@@ -114,8 +114,5 @@ export default {
       this.$emit('changeToSignup')
     }
   },
-  mounted(){
-    console.log(this.$fire.auth.currentUser)
-  }
 }
 </script>
