@@ -1,5 +1,4 @@
 self.addEventListener('push', function (e) {
-  console.log("aaaaaaaa")
   data = e.data.json()
   var options = {
     body: data.notification.body,

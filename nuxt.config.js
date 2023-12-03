@@ -71,7 +71,12 @@ export default {
         persistence: 'local',
       },
       firestore: true,
-      storage: true
+      storage: true,
+      messaging: {
+        createServiceWorker: true,
+        fcmPublicVapidKey: process.env.MESSAGING_KEY,
+        inject: fs.readFileSync('./serviceWorker.js')
+      }
     },
   },
 
@@ -122,7 +127,7 @@ export default {
     //   dev: true,
     //   offline: true,
     //   offlineAssets: ['/*'],
-    //   // importScripts: [ 'custom-sw.js' ],
+    //   importScripts: [ 'custom-sw.js' ],
     // }
   },
 

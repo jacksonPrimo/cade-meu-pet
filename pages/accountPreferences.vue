@@ -133,7 +133,7 @@ export default {
         this.name = data.name || ''
         this.phone = data.phone || ''
         this.profileImage = data.profileImage || ''
-        this.notifications = data.notifications || false
+        this.notifications = data.notificationToken || false
       }
     })
     this.darkTheme = !!localStorage.getItem('dark')
@@ -198,7 +198,19 @@ export default {
       }
     },
     async changeActiveNotifications(value){
-      await this.updateUser({notifications: value})
+      try {
+        if(value) {
+          const permission = await Notification.requestPermission()
+          if(permission == 'granted') {
+            const token = await this.$fire.messaging.getToken()
+            await this.updateUser({ notificationToken: token })
+          }
+        } else {
+          await this.updateUser({ notificationToken: "" })
+        }
+      } catch(e) {
+        console.log("error on get token notification", e)
+      }
     }
   }
 }
