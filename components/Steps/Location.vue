@@ -42,8 +42,8 @@
           dense
         ></v-text-field>
       </v-form>
-      <v-btn color="primary" @click="next">
-        Continue
+      <v-btn :disabled="waiting" color="primary" @click="next">
+        Finalizar
       </v-btn>
       
       <v-btn @click="previous">
@@ -80,6 +80,10 @@ export default {
   props: {
     currentStep: {
       type: Number,
+      required: true
+    },
+    waiting: {
+      type: Boolean,
       required: true
     }
   },

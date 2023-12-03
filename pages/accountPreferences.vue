@@ -102,7 +102,7 @@
 </template>
 
 <script>
-import UploadImage from '@/utils/uploadImage'
+import { UploadImage } from '@/utils/image'
 export default {
   name: 'AdoptionPage',
   layout: "authenticated",

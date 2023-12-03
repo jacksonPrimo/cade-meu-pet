@@ -6,7 +6,7 @@
         <basic-info :currentStep="currentStep" @next="next"></basic-info>
         <identify :currentStep="currentStep" @next="next" @previous="previous"></identify>
         <post-image :currentStep="currentStep" @next="next" @previous="previous"></post-image>
-        <location :currentStep="currentStep" @next="finish" @previous="previous"></location>
+        <location :currentStep="currentStep" @next="finish" @previous="previous" :waiting="waiting"></location>
       </v-stepper>
     </v-col>
     <v-snackbar v-model="alert">
@@ -26,7 +26,7 @@ import BasicInfo from '@/components/Steps/BasicInfo.vue'
 import Identify from '@/components/Steps/Identify.vue'
 import Location from '@/components/Steps/Location.vue'
 import PostImage from '@/components/Steps/PostImage.vue'
-import UploadImage from '@/utils/uploadImage'
+import { UploadImage, randomImageId} from '@/utils/image'
 
 export default {
   components: { BasicInfo, Identify, Location, PostImage },
@@ -36,6 +36,7 @@ export default {
     currentStep: 1,
     alert: false,
     alertText: '',
+    waiting: false
   }),
   methods: {
     next(){
@@ -46,6 +47,7 @@ export default {
     },
     async finish(){
       try {
+        this.waiting = true
         const params = {...this.$store.state.post.postToCreate}
         params.image = await this.uploadFile(params.image)
         params.created = new Date()
@@ -55,25 +57,14 @@ export default {
       } catch(e) {
         this.alertText = "Desculpe, ocorreu um erro ao tentar cadastrar sua publicação"
       } finally {
+        this.waiting = false
         this.alert = true
       }
     },
     uploadFile(image){
-      const path = `${this.$fire.auth.currentUser.uid}/${this.randomId()}`
+      const path = `${this.$fire.auth.currentUser.uid}/${randomImageId()}`
       return UploadImage(image, path, this)
     },
-    randomId() {
-      let result = '';
-      const characters = '0123456789';
-      const charactersLength = characters.length;
-
-      for (let i = 0; i < 14; i++) {
-        const randomIndex = Math.floor(Math.random() * charactersLength);
-        result += characters.charAt(randomIndex);
-      }
-
-      return result;
-    }
   }
 }
 </script>
