@@ -114,7 +114,7 @@
             <v-btn
               color="blue darken-1"
               text
-              @click="openModal = false"
+              @click="closeModal"
             >
               <v-icon dark>
                 mdi-close
@@ -156,6 +156,10 @@ export default {
     profileImage: '',
     password: '',
     passwordConfirmation: '',
+    notificationAddress: {
+      lat: '',
+      lng: ''
+    }
   }),
   mounted(){
     const user = this.$fire.auth.currentUser
@@ -168,6 +172,7 @@ export default {
         this.phone = data.phone || ''
         this.profileImage = data.profileImage || ''
         this.notifications = data.notificationToken || false
+        this.notificationAddress = data.notificationAddress
       }
     })
     this.darkTheme = !!localStorage.getItem('dark')
@@ -247,7 +252,13 @@ export default {
       }
     },
     markLocation(e){
-      console.log(e)
+      this.notificationAddress.lat = e.lat
+      this.notificationAddress.lng = e.lng
+      console.log(this.notificationAddress)
+    },
+    closeModal(){
+      this.openModal = false
+      this.updateUser({ notificationAddress: this.notificationAddress })
     }
   }
 }
