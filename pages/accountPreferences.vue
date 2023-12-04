@@ -91,24 +91,58 @@
         label="Tema escuro"
         @change="changeDarkTheme"
       ></v-switch>
-
+      
       <v-switch
         v-model="notifications"
         label="Ativar notificações"
         @change="changeActiveNotifications"
       ></v-switch>
+
+      <v-btn v-if="notifications" outlined color="blue darken-2" @click="openModal = true">
+        <v-icon color="blue darken-2">mdi-map</v-icon>
+        Endereço para o foco das notificações
+      </v-btn>
+
+      <v-dialog
+        v-model="openModal"
+        persistent
+        max-width="600px"
+      >
+        <v-card>
+          <v-card-title>
+            <span class="text-h5 mr-auto">Escolha um endereço</span>
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="openModal = false"
+            >
+              <v-icon dark>
+                mdi-close
+              </v-icon>
+            </v-btn> 
+          </v-card-title>
+          <v-card-text>
+            <selectable-map @markLocation="markLocation"></selectable-map>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
     </v-col>
   </v-row>
 </template>
 
 <script>
 import { UploadImage } from '@/utils/image'
+import SelectableMap from '@/components/selectableMap.vue'
+
 export default {
-  name: 'AdoptionPage',
+  name: 'AccountPreferences',
   layout: "authenticated",
-  name: 'SigninForm',
+  components: {
+    SelectableMap
+  },
   data: () => ({
     valid: false,
+    openModal: false,
     loading: false,
     authType: "google",
     showPassword: false,
@@ -211,6 +245,9 @@ export default {
       } catch(e) {
         console.log("error on get token notification", e)
       }
+    },
+    markLocation(e){
+      console.log(e)
     }
   }
 }
@@ -226,5 +263,8 @@ export default {
   margin: 15px 0;
   width: 150px;
   border-radius: 50%;
+}
+.map-btn:hover {
+  cursor: pointer;
 }
 </style>

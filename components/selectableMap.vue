@@ -16,7 +16,7 @@ export default {
     location: null,
   }),
   mounted() {
-    this.initializeMap()
+    setTimeout(()=>this.initializeMap(), 500)
   },
   methods: {
     initializeMap(){
@@ -53,3 +53,9 @@ export default {
   }
 }
 </script>
+
+<style>
+.map-container {
+  height: 400px;
+}
+</style>

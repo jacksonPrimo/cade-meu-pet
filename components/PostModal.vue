@@ -20,15 +20,13 @@
             </v-icon>
           </v-btn> 
         </v-card-title>
-        <v-card-section>
+        <v-card-text>
           <v-img
             class="white--text align-end"
             height="500px"
             :src="post.image"
           >
           </v-img>
-        </v-card-section>
-        <v-card-section>
           <v-card-title>
             Localização
           </v-card-title>
@@ -40,8 +38,6 @@
               </l-map>
             </client-only>
           </div>
-        </v-card-section>
-        <v-card-section>
           <v-card-title>Comentarios</v-card-title>
           <div class="pl-2 pr-2">
             <v-textarea
@@ -64,7 +60,7 @@
               </div>
             </v-chip>
           </div>
-        </v-card-section>
+        </v-card-text>
       </v-card>
     </v-dialog>
   </v-row>

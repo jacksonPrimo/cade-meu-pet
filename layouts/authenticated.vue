@@ -110,6 +110,9 @@ export default {
 }
 </script>
 <style lang="scss">
+  .leaflet-control-geosearch .results > * {
+    color: black !important
+  }
   @media only screen and (min-width: 800px) {
     .mobile-menu {
       display: none;
