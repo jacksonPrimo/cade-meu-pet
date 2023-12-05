@@ -26,7 +26,7 @@ import BasicInfo from '@/components/Steps/BasicInfo.vue'
 import Identify from '@/components/Steps/Identify.vue'
 import Location from '@/components/Steps/Location.vue'
 import PostImage from '@/components/Steps/PostImage.vue'
-import { UploadImage, randomImageId} from '@/utils/image'
+import { uploadImage, randomImageId} from '@/utils/image'
 
 export default {
   components: { BasicInfo, Identify, Location, PostImage },
@@ -55,6 +55,7 @@ export default {
         this.$fire.firestore.collection('posts').add(params)
         this.alertText = "Sua publicação foi cadastrada com sucesso!"
       } catch(e) {
+        console.log(e)
         this.alertText = "Desculpe, ocorreu um erro ao tentar cadastrar sua publicação"
       } finally {
         this.waiting = false
@@ -63,7 +64,7 @@ export default {
     },
     uploadFile(image){
       const path = `${this.$fire.auth.currentUser.uid}/${randomImageId()}`
-      return UploadImage(image, path, this)
+      return uploadImage(image, path, this)
     },
   }
 }

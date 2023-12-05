@@ -131,7 +131,7 @@
 </template>
 
 <script>
-import { UploadImage } from '@/utils/image'
+import { uploadImage } from '@/utils/image'
 import SelectableMap from '@/components/selectableMap.vue'
 
 export default {
@@ -220,7 +220,7 @@ export default {
       const uid = this.$fire.auth.currentUser.uid
       if(this.imageFile) {
         const path = `${uid}/profile`
-        this.profileImage = await UploadImage(this.imageFile, path, this)
+        this.profileImage = await uploadImage(this.imageFile, path, this)
       }
     },
     async updateUser(params){

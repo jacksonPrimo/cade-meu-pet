@@ -12,7 +12,7 @@
         <v-select
           :items="situationOptions"
           :rules="[ value => value ? true : 'Situação é obrigatório' ]"
-          label="Situaçao"
+          label="Situação"
           v-model="situation"
           solo
         ></v-select>
