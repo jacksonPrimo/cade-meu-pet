@@ -7,8 +7,7 @@
 export default {
   name: 'DefaultLayout',
   beforeMount(){
-    const dark = !!localStorage.getItem('dark')
-    this.$vuetify.theme.dark = dark
+    this.$vuetify.theme.dark = false
   }
 }
 </script>
