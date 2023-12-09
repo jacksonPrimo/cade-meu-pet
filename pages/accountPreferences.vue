@@ -172,7 +172,7 @@ export default {
         this.phone = data.phone || ''
         this.profileImage = data.profileImage || ''
         this.notifications = data.notificationToken || false
-        this.notificationAddress = data.notificationAddress
+        this.notificationAddress = data.notificationAddress || { lat: '', lng: ''}
       }
     })
     this.darkTheme = !!localStorage.getItem('dark')
@@ -254,7 +254,6 @@ export default {
     markLocation(e){
       this.notificationAddress.lat = e.lat
       this.notificationAddress.lng = e.lng
-      console.log(this.notificationAddress)
     },
     closeModal(){
       this.openModal = false
