@@ -127,6 +127,7 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-geosearch/dist/geosearch.css'
 import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch'
+import { getLimitOfRange } from '@/utils/location'
 
 export default {
   name: 'Filters',
@@ -217,15 +218,12 @@ export default {
       this.coords = e
       const lat = e.location.y
       const lng = e.location.x
-      const radius = this.filters.distance
-      const latDegrees = radius / 111
-      const lngDegrees = radius / (111 * Math.cos(lat * (Math.PI / 180)))
+      const limits = getLimitOfRange(this.filters.distance, lat, lng)
 
-      this.filters['biggerThanLat'] = lat - latDegrees
-      this.filters['smallerThanLat'] = lat + latDegrees
-
-      this.filters['biggerThanLng'] = lng - lngDegrees
-      this.filters['smallerThanLng'] = lng + lngDegrees
+      this.filters['biggerThanLat'] = limits.maxLat
+      this.filters['smallerThanLat'] = limits.minLat
+      this.filters['biggerThanLng'] = limits.maxLng
+      this.filters['smallerThanLng'] = limits.minLng
 
       if(this.circle) {
         this.circle.setLatLng([lat, lng])
