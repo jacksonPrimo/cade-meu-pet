@@ -143,7 +143,7 @@ export default {
             this.password
           )
           const authData = auth.user.multiFactor.user
-          this.finishSignup(authData)
+          this.finishSignup({ name: this.name, ...authData })
         } catch(e) {
           this.signinError = true
           console.log(e)
@@ -153,7 +153,8 @@ export default {
   
     finishSignup(authData){
       const params = {
-        name: authData.displayName
+        name: authData.displayName,
+        email: authData.email
       }
       this.$fire.firestore.collection('users').doc(authData.uid).set(params)
       this.$router.push('/posts')
