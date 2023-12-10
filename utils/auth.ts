@@ -6,7 +6,7 @@ export async function authenticated(){
   const { exp } = decode(token) as any
   const expired = new Date(exp) > new Date()
   if(expired) {
-    // logout()
+    logout()
     return false
   } else {
     return true
