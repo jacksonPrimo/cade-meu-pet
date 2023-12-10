@@ -58,6 +58,7 @@
 
 <script>
 import { GoogleAuthProvider } from 'firebase/auth'
+import { axios } from '@/utils/axios'
 
 export default {
   name: 'SigninForm',
@@ -89,8 +90,9 @@ export default {
     async signInWithGoogle() {
       try {
         const provider = new GoogleAuthProvider();
-        await this.$fire.auth.signInWithPopup(provider)
-        this.$router.push('/posts')
+        const result = await this.$fire.auth.signInWithPopup(provider)
+        console.log(result)
+        // this.$router.push('/posts')
       } catch(e) {
         console.log(e)
         alert('Desculpe ocorreu um erro ao tentar realizar o login')
@@ -100,12 +102,15 @@ export default {
     async signinWithForm(){
       this.$refs.signinForm.validate()
       if(this.valid) {
-        try {
-          await this.$fire.auth.signInWithEmailAndPassword(this.email, this.password)
+        const result = await axios.post('auth/signin', {
+          email: this.email,
+          password: this.password
+        })
+        if(result.status == 200) {
+          localStorage.setItem('authToken', result.data.accessToken)
           this.$router.push('/posts')
-        } catch(e) {
-          console.log(e)
-          alert('Desculpe ocorreu um erro ao tentar realizar o login')
+        } else {
+          alert(result.data.message)
         }
       }
     },  

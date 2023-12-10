@@ -70,6 +70,7 @@
   </v-app>
 </template>
 <script>
+import { authenticated, logout } from '@/utils/auth'
 
 export default {
   name: 'AuthenticatedLayout',
@@ -97,13 +98,14 @@ export default {
     }
   },
   async beforeMount(){
-    if(!this.$fire.auth.currentUser) this.$router.push('/')
+    if(!authenticated()) this.$router.push('/')
+
     const dark = !!localStorage.getItem('dark')
     this.$vuetify.theme.dark = dark
   },
   methods: {
     logout(){
-      this.$fire.auth.signOut()
+      logout()
       this.$router.push('/')
     }
   }

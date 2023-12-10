@@ -31,7 +31,8 @@ export default {
     signin: true,
   }),
   async beforeMount(){
-    if(this.$fire.auth.currentUser) this.$router.push('/posts')
+    const authenticated = localStorage.getItem('authToken')
+    if(authenticated) this.$router.push('/posts')
   },
   methods: {}
 }
