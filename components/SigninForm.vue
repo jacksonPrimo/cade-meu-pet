@@ -90,9 +90,9 @@ export default {
     async signInWithGoogle() {
       try {
         const provider = new GoogleAuthProvider();
-        const result = await this.$fire.auth.signInWithPopup(provider)
-        console.log(result)
-        // this.$router.push('/posts')
+        const { credential } = await this.$fire.auth.signInWithPopup(provider)        
+        const response = await axios.post('auth/signinWithGoogle', { token: credential.accessToken })
+        this.finishSignin(response)
       } catch(e) {
         console.log(e)
         alert('Desculpe ocorreu um erro ao tentar realizar o login')
@@ -102,18 +102,22 @@ export default {
     async signinWithForm(){
       this.$refs.signinForm.validate()
       if(this.valid) {
-        const result = await axios.post('auth/signin', {
+        const response = await axios.post('auth/signin', {
           email: this.email,
           password: this.password
         })
-        if(result.status == 200) {
-          localStorage.setItem('authToken', result.data.accessToken)
-          this.$router.push('/posts')
-        } else {
-          alert(result.data.message)
-        }
+        this.finishSignin(response)
       }
     },  
+
+    finishSignin(response){
+      if(response.status == 200) {
+        localStorage.setItem('authToken', response.data.accessToken)
+        this.$router.push('/posts')
+      } else {
+        alert(response.data.message)
+      }
+    },
 
     changeToSignup(){
       this.$emit('changeToSignup')

@@ -62,9 +62,6 @@
             dense
           ></v-text-field>
         </v-row>
-        <v-row v-if="signinError">
-          <span class="error--text">Usuario ou senha inválidos</span>
-        </v-row>
         <v-row>
           <v-btn
             :disabled="!valid"
@@ -98,6 +95,8 @@
 </template>
 
 <script>
+import { axios } from '@/utils/axios'
+
 export default {
   name: 'SignupForm',
   data: () => ({
@@ -120,15 +119,14 @@ export default {
         return 'E-mail must be valid.'
       },
     ],
-    signinError: false
   }),
   methods: {
     async signUpWithGoogle() {
       try {
         var provider = new this.$fireModule.auth.GoogleAuthProvider();
-        const auth = await this.$fire.auth.signInWithPopup(provider)
-        const authData = auth.user.multiFactor.user
-        this.finishSignup(authData)
+        const { credential } = await this.$fire.auth.signInWithPopup(provider)        
+        const response = await axios.post('auth/signinWithGoogle', { token: credential.accessToken })
+        this.finishSignup(response)
       } catch(e) {
         console.log(e)
       }
@@ -137,27 +135,22 @@ export default {
     async signupWithForm(){
       this.$refs.signupForm.validate()
       if(this.valid) {
-        try {
-          const auth = await this.$fire.auth.createUserWithEmailAndPassword(
-            this.email,
-            this.password
-          )
-          const authData = auth.user.multiFactor.user
-          this.finishSignup({ name: this.name, ...authData })
-        } catch(e) {
-          this.signinError = true
-          console.log(e)
-        }
+        const response = await axios.post('auth/signup', {
+          email: this.email,
+          name: this.name,
+          password: this.password
+        })
+       this.finishSignup(response)
       }
     },
   
-    finishSignup(authData){
-      const params = {
-        name: authData.displayName,
-        email: authData.email
+    finishSignup(response){
+      if(response.status == 200) {
+        localStorage.setItem('authToken', response.data.accessToken)
+        this.$router.push('/posts')          
+      } else {
+        alert(response.data.message)
       }
-      this.$fire.firestore.collection('users').doc(authData.uid).set(params)
-      this.$router.push('/posts')
     },
 
     changeToSignin(){

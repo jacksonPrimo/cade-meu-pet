@@ -7,17 +7,14 @@ if(window.location.href.includes("localhost")) {
   baseURL = "" //url da api de prod
 }
 
-let token = localStorage.getItem("authToken")
-
 const axios = new Axios({
   baseURL,
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`
-  }
 })
 
 axios.interceptors.request.use((config) => {
+  let token = localStorage.getItem("authToken")
+  config.headers.Authorization = `Bearer ${token}`
+  config.headers["Content-Type"] = "application/json"
   config.data = JSON.stringify(config.data)
   return config;
 });
