@@ -220,10 +220,10 @@ export default {
       const lng = e.location.x
       const limits = getLimitOfRange(this.filters.distance, lat, lng)
 
-      this.filters['biggerThanLat'] = limits.maxLat
-      this.filters['smallerThanLat'] = limits.minLat
-      this.filters['biggerThanLng'] = limits.maxLng
-      this.filters['smallerThanLng'] = limits.minLng
+      this.filters['biggerThanLat'] = limits.minLat
+      this.filters['smallerThanLat'] = limits.maxLat
+      this.filters['biggerThanLng'] = limits.minLng
+      this.filters['smallerThanLng'] = limits.maxLng
 
       if(this.circle) {
         this.circle.setLatLng([lat, lng])
