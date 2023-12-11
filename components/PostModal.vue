@@ -32,9 +32,9 @@
           </v-card-title>
           <div id="map-wrap" style="height: 50vh;">
             <client-only>
-              <l-map :zoom=13 :center="[post.address.lat, post.address.lng]">
+              <l-map :zoom=13 :center="[post.addressLat, post.addressLng]">
                 <l-tile-layer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"></l-tile-layer>
-                <l-marker :lat-lng="[post.address.lat, post.address.lng]"></l-marker>
+                <l-marker :lat-lng="[post.addressLat, post.addressLng]"></l-marker>
               </l-map>
             </client-only>
           </div>

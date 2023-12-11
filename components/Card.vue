@@ -45,9 +45,6 @@
         required: true,
       },
     },
-    mounted(){
-      console.log(this.post.created)
-    },
     computed: {
       styleSituation(){
         switch(this.post.situation){
@@ -76,7 +73,7 @@
       },
       createdAt(){
         const dataAtual = new Date();
-        const diferenca = dataAtual.getTime() - this.post.created.toDate().getTime();
+        const diferenca = dataAtual.getTime() - new Date(this.post.postedAt);
 
         const segundos = Math.floor(diferenca / 1000);
         const minutos = Math.floor(segundos / 60);

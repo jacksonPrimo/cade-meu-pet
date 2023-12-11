@@ -24,6 +24,7 @@
 import PostCard from '@/components/Card.vue'
 import PostModal from '@/components/PostModal.vue'
 import Filters from '@/components/Filters.vue'
+import { axios } from '@/utils/axios'
 
 export default {
   name: 'LostAndFoundPage',
@@ -36,7 +37,6 @@ export default {
   data: ()=>({
     page: 0,
     limit: 16,
-    filters: {},
     posts: [],
     selectedPost: null
   }),
@@ -45,37 +45,15 @@ export default {
   },
   methods: {
     filter(filters){
-      this.filters = filters
-      this.getPosts()
+      this.getPosts(filters)
     },
-    getPosts(){
-      console.log("filters", this.filters)
-      let query = this.$fire.firestore.collection('posts')
-      if(this.filters.name) query = query.where('name', '==', this.filters.name)
-      if(this.filters.chip) query = query.where('chip', '==', this.filters.chip)
-      if(this.filters.zipcode) query = query.where('zipcode', '==', this.filters.zipcode)
-      if(this.filters.gender) query = query.where('gender', '==', this.filters.gender)
-      if(this.filters.race?.length) query = query.where('race', 'in', this.extractValues(this.filters.race))
-      if(this.filters.situation?.length) query = query.where('situation', 'in', this.extractValues(this.filters.situation))
-
-      const skip = this.page * this.limit
-      if(this.filters.biggerThanLat) {
-        query = query.where('address.lat', '>=', this.filters.biggerThanLat)
-        query = query.where('address.lat', '<=', this.filters.smallerThanLat)
-        query.get().then(result=>{
-          const docs = result.docs.filter(doc=>{
-            const data = doc.data()
-            return data.address.lng >= this.filters.biggerThanLng && data.address.lng <= this.filters.smallerThanLng
-          })
-          const filtered = docs.map(doc=>({id: doc.id, ...doc.data()}))
-          this.posts = filtered.splice(skip, this.limit)
-        })
+    async getPosts(filters){
+      const params = new URLSearchParams(filters)
+      const response = await axios.get(`/post/list?${params}`)
+      if(response.status == 200) {
+        this.posts = response.data
       } else {
-        query.orderBy('created').startAt(skip).limit(this.limit)
-        query.get().then(posts=>{
-          this.posts = []
-          posts.forEach(doc=>this.posts.push({id: doc.id, ...doc.data()}))
-        })
+        alert('Ocorreu um erro ao listar as publicações')
       }
     },
     extractValues(selecteds){
