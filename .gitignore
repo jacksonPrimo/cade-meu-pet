@@ -91,3 +91,4 @@ sw.*
 
 # firebase
 static/firebase-messaging-sw.js
+.vercel
