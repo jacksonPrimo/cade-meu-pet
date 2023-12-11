@@ -82,17 +82,12 @@
         Gênero
       </span>
       <div>
-        <v-radio-group v-model="filters.gender">
-          <v-radio
-            label="Macho"
-            value="M"
-          ></v-radio>
-
-          <v-radio
-            label="Fêmea"
-            value="F"
-          ></v-radio>
-        </v-radio-group>
+        <v-combobox
+        multiple
+        small-chips
+        :items="genderOptions"
+        v-model="filters.gender"
+      ></v-combobox>
       </div>
     </div>
 
@@ -213,6 +208,9 @@ export default {
       })
       this.map.addControl(searchControl)
       this.map.on('geosearch/showlocation', this.handleSelectedLocation)
+      document
+        .querySelector('button.reset[aria-label="Clear search"]')
+        .addEventListener('click', this.resetLocation)
     },
     handleSelectedLocation(e){
       this.coords = e
@@ -236,6 +234,16 @@ export default {
         })
         this.circle.addTo(this.map);
       }
+    },
+    resetLocation(){
+      if(this.circle) {
+        this.map.removeLayer(this.circle); 
+        this.circle = null
+      }
+      this.filters['biggerThanLat'] = ''
+      this.filters['smallerThanLat'] = ''
+      this.filters['biggerThanLng'] = ''
+      this.filters['smallerThanLng'] = ''
     },
     filter() {
       this.$emit('filter', this.filters)
