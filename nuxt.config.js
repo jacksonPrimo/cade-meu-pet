@@ -1,7 +1,5 @@
 require('dotenv').config();
 import colors from 'vuetify/es5/util/colors'
-import fs from 'fs'
-import path from 'path'
 
 export default {
   server: {
@@ -65,13 +63,11 @@ export default {
       storageBucket: process.env.STORAGE_BUCKET,
       messagingSenderId: process.env.MESSAGING_SENDER_ID,
       appId: process.env.APP_ID,
-      measurementId: process.env.MEASUREMENT_ID
     },
     services: {
       auth: {
         persistence: 'local',
       },
-      firestore: true,
       storage: true,
     },
   },
