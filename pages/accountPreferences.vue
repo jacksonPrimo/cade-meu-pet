@@ -20,7 +20,6 @@
         ></v-file-input>
 
         <v-text-field
-          v-if="authType == 'emailAndPassword'"
           solo
           prepend-inner-icon="mdi-email"
           v-model="email"
@@ -47,7 +46,6 @@
         ></v-text-field>
 
         <v-text-field
-          v-if="authType == 'emailAndPassword'"
           v-model="password"
           :type="showPassword ? 'text' : 'password'"
           @click:append="showPassword = !showPassword"
@@ -59,7 +57,6 @@
         ></v-text-field>
 
         <v-text-field
-          v-if="authType == 'emailAndPassword'"
           :rules="
             this.password ? [
               value => value ? true : 'Confirmação é obrigatória',
@@ -93,12 +90,12 @@
       ></v-switch>
       
       <v-switch
-        v-model="notifications"
+        v-model="notification"
         label="Ativar notificações"
         @change="changeActiveNotifications"
       ></v-switch>
 
-      <v-btn v-if="notifications" outlined color="blue darken-2" @click="openModal = true">
+      <v-btn v-if="notification" outlined color="blue darken-2" @click="openModal = true">
         <v-icon color="blue darken-2">mdi-map</v-icon>
         Endereço para o foco das notificações
       </v-btn>
@@ -133,6 +130,8 @@
 <script>
 import { uploadImage } from '@/utils/image'
 import SelectableMap from '@/components/selectableMap.vue'
+import { axios } from '@/utils/axios'
+import { getAuthData } from '@/utils/auth'
 
 export default {
   name: 'AccountPreferences',
@@ -144,88 +143,68 @@ export default {
     valid: false,
     openModal: false,
     loading: false,
-    authType: "google",
     showPassword: false,
     showConfirmPassword: false,
     darkTheme: false,
-    notifications: false,
+    userId: '',
     imageFile: null,
     name: '',
     phone: '',
     email: '',
     profileImage: '',
+    notification: false,
+    notificationLat: '',
+    notificationLng: '',
     password: '',
     passwordConfirmation: '',
-    notificationAddress: {
-      lat: '',
-      lng: ''
-    }
   }),
-  mounted(){
-    const user = this.$fire.auth.currentUser
-    this.checkIfUserHasPassword(user)
-    this.email = user.email
-    this.$fire.firestore.collection('users').doc(user.uid).get().then(result=> {
-      const data = result.data()
-      if(data) {
-        this.name = data.name || ''
-        this.phone = data.phone || ''
-        this.profileImage = data.profileImage || ''
-        this.notifications = data.notificationToken || false
-        this.notificationAddress = data.notificationAddress || { lat: '', lng: ''}
-      }
-    })
+  async mounted(){
+    this.userId = getAuthData().userId
+    this.loading = true
+    const response = await axios.get('user/me')
+    if(response.status == 200) {
+      this.loading = false
+      this.email = response.data.email || ''
+      this.name = response.data.name || ''
+      this.phone = response.data.phone || ''
+      this.profileImage = response.data.profileImage || ''
+      this.notification = response.data.notification
+      this.notificationLat = response.data.notificationLat    
+      this.notificationLng = response.data.notificationLng    
+    } else {
+      alert(response.data.message)
+    }
     this.darkTheme = !!localStorage.getItem('dark')
   },
   methods: {
-    checkIfUserHasPassword(user){
-      const providers = user.providerData || []
-      const hasPassword = providers.some(p => p.providerId == 'password')
-      this.authType = hasPassword ? 'emailAndPassword' : 'google'
-    },
     async submit(){
       this.$refs.accountPreferenceForm.validate()
       if(this.valid){ 
         this.loading = true
-        try {
-          await this.changeEmail()
-          await this.changePassword()
-          await this.uploadImageFile()
-          await this.updateUser({
-            name: this.name,
-            phone: this.phone,
-            profileImage: this.profileImage,
-          })
-          alert('Perfil atualizado com sucesso!')
-        } catch(e) {
-          alert('Desculpe ocorreu um erro ao tentar atualizar seu perfil!')
-          console.log(e)
-        } finally {
-          this.loading = false
-        }
-      }
-    },
-    async changePassword(){
-      if(this.password && this.passwordConfirmation) {
-        await this.$fire.auth.currentUser.updatePassword(this.password)
-      }
-    },
-    async changeEmail(){
-      if(this.email && this.email !== this.$fire.auth.currentUser.email) {
-        await this.$fire.auth.currentUser.verifyBeforeUpdateEmail(this.email)
-        alert('enviamos um link de confirmação para este novo email')
+        await this.uploadImageFile()
+        await this.updateUser({
+          email: this.email,
+          name: this.name,
+          phone: this.phone,
+          profileImage: this.profileImage,
+          password: this.password,
+        })
+        this.loading = false
       }
     },
     async uploadImageFile(){
-      const uid = this.$fire.auth.currentUser.uid
       if(this.imageFile) {
-        const path = `${uid}/profile`
+        const path = `${this.userId}/profile`
         this.profileImage = await uploadImage(this.imageFile, path, this)
       }
     },
-    async updateUser(params){
-      const uid = this.$fire.auth.currentUser.uid
-      await this.$fire.firestore.collection('users').doc(uid).update(params)
+    async updateUser(params, doAlert=true){
+      const response = await axios.patch('user', params)
+      if(response.status == 200){
+        if(doAlert) alert('Perfil atualizado com sucesso!')
+      } else {
+        alert(response.data.message)
+      }
     },
     changeDarkTheme(value){
       if(value == false) {
@@ -237,27 +216,18 @@ export default {
       }
     },
     async changeActiveNotifications(value){
-      try {
-        if(value) {
-          const permission = await Notification.requestPermission()
-          if(permission == 'granted') {
-            const token = await this.$fire.messaging.getToken()
-            await this.updateUser({ notificationToken: token })
-          }
-        } else {
-          await this.updateUser({ notificationToken: "" })
-        }
-      } catch(e) {
-        console.log("error on get token notification", e)
-      }
+      await this.updateUser({ notification: value }, false)
     },
     markLocation(e){
-      this.notificationAddress.lat = e.lat
-      this.notificationAddress.lng = e.lng
+      this.notificationLat = e.lat
+      this.notificationLng = e.lng
     },
     closeModal(){
       this.openModal = false
-      this.updateUser({ notificationAddress: this.notificationAddress })
+      this.updateUser({ 
+        notificationLat: this.notificationLat,
+        notificationLng: this.notificationLng 
+      }, false)
     }
   }
 }
