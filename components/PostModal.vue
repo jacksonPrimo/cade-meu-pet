@@ -53,7 +53,7 @@
           <div class="ml-2 mb-2">
             <v-chip class="pt-7 pb-7 my-2 mr-2" v-for="(comment, index) of comments" :key="index" style="text-wrap: wrap; min-width: 98%;">
               <v-avatar left  size="56">
-                <v-img :src="comment.profileImage"></v-img>
+                <v-img :src="comment.author.profileImage"></v-img>
               </v-avatar>
               <div>
                 {{ comment.description }}                
@@ -67,6 +67,8 @@
 </template>
 
 <script>
+import { axios } from '@/utils/axios'
+
 export default {
   props: {
     post: {
@@ -78,55 +80,39 @@ export default {
     comment: "",
     writing: false,
     comments: [],
-    limit: 10,
-    page: 1
+    page: 0
   }),
   mounted(){
     this.getComments()
   },
   methods: {
     closeModal(){
+      this.comments = []
       this.$emit('closeModal')
     },
     async getComments(){
-      try {
-        const skip = this.page * this.limit
-        let query = this.$fire.firestore.collection('comments')
-        query = query.where('postId', '==', this.post.id)
-        query.orderBy('created').startAt(skip).limit(this.limit)
-        const docs = await query.get()
-        docs.forEach(async doc=> {
-          const comment = doc.data()
-          const userDoc = await this.$fire.firestore.collection('users').doc(comment.userId).get()
-          const user = userDoc.data()
-          this.comments.push({
-            id: doc.id, 
-            profileImage: user.profileImage,
-            ...comment
-          })
-        })
-      } catch(e) {
-        console.log(e)
+      const response = await axios.get(`comment/list?page=${this.page}&postId=${this.post.id}`)
+      if(response.status == 200) {
+        this.comments = response.data
+      } else {
+        alert(response.data.message)
       }
     },
     async writeAComment(e){
       if(!this.comment) return
-      try {
-        e.preventDefault()
-        const params = {
-          description: this.comment,
-          userId: this.$fire.auth.currentUser.uid,
-          postId: this.post.id,
-          created: new Date()
-        }
-        this.writing = true
-        await this.$fire.firestore.collection('comments').add(params)
-        this.comment = ""
-      } catch(e) {
-        console.log(e)
-      } finally {
-        this.writing = false
+      e.preventDefault()
+      const params = {
+        description: this.comment,
+        postId: this.post.id,
       }
+      this.writing = true
+      const response = await axios.post('comment/create', params)
+      if(response.status == 200) {
+        this.comments = response.data
+      } else {
+        alert(response.data.message)
+      }
+      this.writing = false
     }
   },
   computed: {
