@@ -73,11 +73,6 @@ export default {
       },
       firestore: true,
       storage: true,
-      messaging: {
-        createServiceWorker: true,
-        fcmPublicVapidKey: process.env.MESSAGING_KEY,
-        inject: fs.readFileSync('./serviceWorker.js')
-      }
     },
   },
 
@@ -124,15 +119,7 @@ export default {
       display: 'fullscreen',
       useWebmanifestExtension: false
     },
-    // workbox: {
-    //   dev: true,
-    //   offline: true,
-    //   offlineAssets: ['/*'],
-    //   importScripts: [ 'custom-sw.js' ],
-    // }
   },
-
-  // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
   }
 }
