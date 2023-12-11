@@ -26,7 +26,9 @@ import BasicInfo from '@/components/Steps/BasicInfo.vue'
 import Identify from '@/components/Steps/Identify.vue'
 import Location from '@/components/Steps/Location.vue'
 import PostImage from '@/components/Steps/PostImage.vue'
-import { uploadImage, randomImageId} from '@/utils/image'
+import { uploadImage, randomImageId } from '@/utils/image'
+import { axios } from '@/utils/axios'
+import { getAuthData } from '@/utils/auth'
 
 export default {
   components: { BasicInfo, Identify, Location, PostImage },
@@ -46,24 +48,23 @@ export default {
       this.currentStep -= 1
     },
     async finish(){
-      try {
-        this.waiting = true
-        const params = {...this.$store.state.post.postToCreate}
-        params.image = await this.uploadFile(params.image)
-        params.created = new Date()
-        params.userId = this.$fire.auth.currentUser.uid
-        this.$fire.firestore.collection('posts').add(params)
+      this.waiting = true
+      const params = {...this.$store.state.post.postToCreate}
+      params.image = await this.uploadFile(params.image)
+      const response = await axios.post('/post/create', params)
+      if(response.status == 200) {
+        this.$store.dispatch('post/setPostToCreate', {})
+        this.currentStep = 1
         this.alertText = "Sua publicação foi cadastrada com sucesso!"
-      } catch(e) {
-        console.log(e)
-        this.alertText = "Desculpe, ocorreu um erro ao tentar cadastrar sua publicação"
-      } finally {
-        this.waiting = false
-        this.alert = true
+      } else {
+        this.alertText = response.data.message
       }
+      this.waiting = false
+      this.alert = true
     },
     uploadFile(image){
-      const path = `${this.$fire.auth.currentUser.uid}/${randomImageId()}`
+      const { userId } = getAuthData()
+      const path = `${userId}/${randomImageId()}`
       return uploadImage(image, path, this)
     },
   }

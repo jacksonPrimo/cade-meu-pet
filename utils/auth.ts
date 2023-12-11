@@ -18,6 +18,6 @@ export function logout() {
 }
 
 export function getAuthData(){
-  const token = localStorage.getItem('accessToken') || ''
+  const token = localStorage.getItem('authToken') || ''
   return decode(token) as { email: string, userId: string }
 }

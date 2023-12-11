@@ -102,7 +102,7 @@ export default {
     situation: "",
     race: "",
     gender: "",
-    reward: ""
+    reward: null
   }),
   props: {
     currentStep: {
@@ -113,13 +113,12 @@ export default {
   methods: {
     next(){
       this.$refs.basicInfoForm.validate()
-      // setar o state
       if(this.valid) {
         this.$store.dispatch('post/setPostToCreate', {
           situation: this.situation,
           race: this.race,
           gender: this.gender,
-          reward: this.reward
+          reward: this.reward ? +this.reward : null
         })
         this.$emit("next")
       }

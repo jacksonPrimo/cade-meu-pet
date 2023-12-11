@@ -11,33 +11,9 @@
       <selectable-map @markLocation="markLocation"></selectable-map>
       <v-form ref="addressForm" v-model="formValid" class="mt-4">
         <v-text-field
-          label="Cidade"
-          v-model="address.city"
-          :rules="[ value => value ? true : 'Cidade é obrigatório' ]"
-          outlined
-          dense
-        ></v-text-field>
-
-        <v-text-field
-          label="Bairro"
-          v-model="address.district"
-          :rules="[ value => value ? true : 'Bairro é obrigatório' ]"
-          outlined
-          dense
-        ></v-text-field>
-        
-        <v-text-field
-        label="Rua"
-        v-model="address.street"
-        :rules="[ value => value ? true : 'Rua é obrigatório' ]"
-        outlined
-        dense
-        ></v-text-field>
-
-        <v-text-field
-          label="Cep"
-          v-model="address.zipcode"
-          :rules="[ value => value ? true : 'Cep é obrigatório' ]"
+          label="Endereço"
+          v-model="addressLabel"
+          :rules="[ value => value ? true : 'Digite um endereço' ]"
           outlined
           dense
         ></v-text-field>
@@ -64,15 +40,9 @@ export default {
   data: () => ({
     step: 4,
     formValid: false,
-    address: {
-      state: '',
-      district: '',
-      city: '',
-      street: '',
-      zipcode: '',
-      lat: '',
-      lng: ''
-    }
+    addressLat: '',
+    addressLng: '',
+    addressLabel: '',
   }),
   props: {
     currentStep: {
@@ -87,12 +57,14 @@ export default {
   methods: {
     next(){
       this.$refs.addressForm.validate()
-      if(this.formValid && this.address.lat && this.address.lng) {
+      if(this.formValid && this.addressLat && this.addressLng) {
         this.$store.dispatch('post/setPostToCreate', {
-          address: this.address
+          addressLabel: this.addressLabel,
+          addressLat: this.addressLat,
+          addressLng: this.addressLng
         })
         this.$emit("next")
-      } else if(!this.address.lat || !this.address.lng){
+      } else if(!this.addressLat || !this.addressLng){
         alert('selecione uma localização')
       }
     },
@@ -100,29 +72,10 @@ export default {
       this.$emit("previous")
     },
     markLocation(e){
-      this.address.lat = e.lat
-      this.address.lng = e.lng
-      if(e.label) this.populateFormAddressValues(e.label)
+      this.addressLat = e.lat
+      this.addressLng = e.lng
+      if(e.label) this.addressLabel = e.label
     },
-    populateFormAddressValues(label){
-      const splittedInfo = label.split(',')
-      if(splittedInfo.length == 8) {
-        this.address.state = splittedInfo[4]
-        this.address.district = splittedInfo[0]
-        this.address.city = splittedInfo[1]
-        this.address.zipcode = splittedInfo[6]
-      } else if(splittedInfo.length == 6) {
-        this.address.street = splittedInfo[0]
-        this.address.state = splittedInfo[3]
-        this.address.city = splittedInfo[1]
-      } else if(splittedInfo.length == 9) {
-        this.address.street = splittedInfo[0]
-        this.address.district = splittedInfo[1]
-        this.address.city = splittedInfo[2]
-        this.address.state = splittedInfo[5]
-        this.address.zipcode = splittedInfo[7]
-      }
-    }
   }
 }
 </script>
