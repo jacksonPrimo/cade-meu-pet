@@ -119,7 +119,7 @@
             </v-btn> 
           </v-card-title>
           <v-card-text>
-            <selectable-map @markLocation="markLocation" :initialLocation="[this.notificationLat, this.notificationLng]"></selectable-map>
+            <selectable-map @markLocation="markLocation" :initialLocation="initialLocation()"></selectable-map>
           </v-card-text>
         </v-card>
       </v-dialog>
@@ -229,6 +229,14 @@ export default {
         notificationLng: this.notificationLng 
       }, false)
     },
+
+    initialLocation(){
+      if(this.notificationLat && this.notificationLng) {
+        return [this.notificationLat, this.notificationLng]
+      } else {
+        return null
+      }
+    }
   }
 }
 </script>
