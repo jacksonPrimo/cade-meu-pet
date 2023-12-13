@@ -24,7 +24,6 @@
 import PostCard from '@/components/Card.vue'
 import PostModal from '@/components/PostModal.vue'
 import Filters from '@/components/Filters.vue'
-import { axios } from '@/utils/axios'
 
 export default {
   name: 'LostAndFoundPage',
@@ -49,10 +48,10 @@ export default {
     },
     async getPosts(filters){
       const params = new URLSearchParams(filters)
-      const response = await axios.get(`/post/list?${params}`)
-      if(response.status == 200) {
+      try {
+        const response = await this.$axios.get(`/post/list?${params}`)
         this.posts = response.data
-      } else {
+      } catch(e) {
         alert('Ocorreu um erro ao listar as publicações')
       }
     },

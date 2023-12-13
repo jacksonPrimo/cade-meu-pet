@@ -130,7 +130,6 @@
 <script>
 import { uploadImage } from '@/utils/image'
 import SelectableMap from '@/components/selectableMap.vue'
-import { axios } from '@/utils/axios'
 import { getAuthData } from '@/utils/auth'
 
 export default {
@@ -159,11 +158,11 @@ export default {
     passwordConfirmation: '',
   }),
   async mounted(){
+    this.darkTheme = !!localStorage.getItem('dark')
     this.userId = getAuthData().userId
     this.loading = true
-    const response = await axios.get('user/me')
-    if(response.status == 200) {
-      this.loading = false
+    try {
+      const response = await this.$axios.get('user/me')
       this.email = response.data.email || ''
       this.name = response.data.name || ''
       this.phone = response.data.phone || ''
@@ -171,10 +170,11 @@ export default {
       this.notification = response.data.notification
       this.notificationLat = response.data.notificationLat    
       this.notificationLng = response.data.notificationLng    
-    } else {
-      alert(response.data.message)
+    } catch(e) {
+      alert(e.response.data.message)
+    } finally {
+      this.loading = false
     }
-    this.darkTheme = !!localStorage.getItem('dark')
   },
   methods: {
     async submit(){
@@ -199,11 +199,11 @@ export default {
       }
     },
     async updateUser(params, doAlert=true){
-      const response = await axios.patch('user', params)
-      if(response.status == 200){
+      try {
+        await this.$axios.patch('user', params)
         if(doAlert) alert('Perfil atualizado com sucesso!')
-      } else {
-        alert(response.data.message)
+      } catch(e) {
+        alert(e.response.data.message)
       }
     },
     changeDarkTheme(value){

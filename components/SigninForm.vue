@@ -58,7 +58,6 @@
 
 <script>
 import { GoogleAuthProvider } from 'firebase/auth'
-import { axios } from '@/utils/axios'
 
 export default {
   name: 'SigninForm',
@@ -102,21 +101,21 @@ export default {
     async signinWithForm(){
       this.$refs.signinForm.validate()
       if(this.valid) {
-        const response = await this.$axios.post('/auth/signin', {
-          email: this.email,
-          password: this.password
-        })
-        this.finishSignin(response)
+        try {
+          const response = await this.$axios.post('/auth/signin', {
+            email: this.email,
+            password: this.password
+          })
+          this.finishSignin(response)
+        } catch(e) {
+          console.log(e.response.data.message)
+        }
       }
     },  
 
     finishSignin(response){
-      if(response.status == 200) {
-        localStorage.setItem('authToken', response.data.accessToken)
-        this.$router.push('/posts')
-      } else {
-        alert(response.data.message)
-      }
+      localStorage.setItem('authToken', response.data.accessToken)
+      this.$router.push('/posts')
     },
 
     changeToSignup(){

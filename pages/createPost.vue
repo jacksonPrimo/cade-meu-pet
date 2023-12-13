@@ -27,7 +27,6 @@ import Identify from '@/components/Steps/Identify.vue'
 import Location from '@/components/Steps/Location.vue'
 import PostImage from '@/components/Steps/PostImage.vue'
 import { uploadImage, randomImageId } from '@/utils/image'
-import { axios } from '@/utils/axios'
 import { getAuthData } from '@/utils/auth'
 
 export default {
@@ -51,16 +50,17 @@ export default {
       this.waiting = true
       const params = {...this.$store.state.post.postToCreate}
       params.image = await this.uploadFile(params.image)
-      const response = await axios.post('/post/create', params)
-      if(response.status == 200) {
+      try {
+        await this.$axios.post('/post/create', params)
         this.$store.dispatch('post/setPostToCreate', {})
         this.currentStep = 1
         this.alertText = "Sua publicação foi cadastrada com sucesso!"
-      } else {
-        this.alertText = response.data.message
+      } catch(e) {
+        this.alertText = e.response.data.message
+      } finally {
+        this.waiting = false
+        this.alert = true
       }
-      this.waiting = false
-      this.alert = true
     },
     uploadFile(image){
       const { userId } = getAuthData()

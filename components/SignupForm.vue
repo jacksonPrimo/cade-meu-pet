@@ -95,8 +95,6 @@
 </template>
 
 <script>
-import { axios } from '@/utils/axios'
-
 export default {
   name: 'SignupForm',
   data: () => ({
@@ -125,32 +123,33 @@ export default {
       try {
         var provider = new this.$fireModule.auth.GoogleAuthProvider();
         const { credential } = await this.$fire.auth.signInWithPopup(provider)        
-        const response = await axios.post('auth/signinWithGoogle', { token: credential.accessToken })
+        const response = await this.$axios.post('auth/signinWithGoogle', { token: credential.accessToken })
         this.finishSignup(response)
       } catch(e) {
-        console.log(e)
+        const message = e.response?.data?.message || "Ocorreu um erro ao fazer login"
+        alert(message)
       }
     },
 
     async signupWithForm(){
       this.$refs.signupForm.validate()
       if(this.valid) {
-        const response = await axios.post('auth/signup', {
-          email: this.email,
-          name: this.name,
-          password: this.password
-        })
-       this.finishSignup(response)
+        try {
+          const response = await this.$axios.post('auth/signup', {
+            email: this.email,
+            name: this.name,
+            password: this.password
+          })
+         this.finishSignup(response)
+        } catch(e) {
+          alert(e.response.data.message)
+        }
       }
     },
   
     finishSignup(response){
-      if(response.status == 200) {
-        localStorage.setItem('authToken', response.data.accessToken)
-        this.$router.push('/posts')          
-      } else {
-        alert(response.data.message)
-      }
+      localStorage.setItem('authToken', response.data.accessToken)
+      this.$router.push('/posts')          
     },
 
     changeToSignin(){

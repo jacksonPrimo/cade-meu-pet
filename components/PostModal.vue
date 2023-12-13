@@ -67,8 +67,6 @@
 </template>
 
 <script>
-import { axios } from '@/utils/axios'
-
 export default {
   props: {
     post: {
@@ -91,11 +89,11 @@ export default {
       this.$emit('closeModal')
     },
     async getComments(){
-      const response = await axios.get(`comment/list?page=${this.page}&postId=${this.post.id}`)
-      if(response.status == 200) {
+      try {
+        const response = await this.$axios.get(`comment/list?page=${this.page}&postId=${this.post.id}`)
         this.comments = response.data
-      } else {
-        alert(response.data.message)
+      } catch(e) {
+        alert(e.response.data.message)
       }
     },
     async writeAComment(e){
@@ -106,11 +104,11 @@ export default {
         postId: this.post.id,
       }
       this.writing = true
-      const response = await axios.post('comment/create', params)
-      if(response.status == 200) {
+      try {
+        const response = await this.$axios.post('comment/create', params)
         this.comments = response.data
-      } else {
-        alert(response.data.message)
+      } catch(e) {
+        alert(e.response.data.message)
       }
       this.writing = false
     }
