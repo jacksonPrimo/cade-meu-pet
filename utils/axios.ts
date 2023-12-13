@@ -4,7 +4,7 @@ let baseURL
 if(window.location.href.includes("localhost")) {
   baseURL = "http://localhost:3000/"
 } else {
-  baseURL = "" //url da api de prod
+  baseURL = "https://pet-connection-api.vercel.app/" //url da api de prod
 }
 
 const axios = new Axios({
