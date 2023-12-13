@@ -2,7 +2,7 @@
   <div class="container-box grey lighten-3">
     <div class="box white">
       <v-row style="height: 100%;">
-        <v-col class="text-center px-16 first-column">
+        <v-col class="text-center px-16 signin-form">
           <div class="welcome">
             <span>
               Bem Vindo
@@ -12,7 +12,7 @@
           <SigninForm @changeToSignup="()=>signin = false" v-if="signin"></SigninForm>
           <SignupForm @changeToSignin="()=>signin = true" v-else></SignupForm>
         </v-col>
-        <v-col class="second-column"></v-col>
+        <v-col class="signin-image"></v-col>
       </v-row>
     </div>
   </div>
@@ -54,7 +54,7 @@ export default {
   padding: 25px;
 }
 
-.first-column {
+.signin-form {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -75,7 +75,7 @@ export default {
   font-size: 13px;
 }
 
-.second-column {
+.signin-image {
   border-radius: 20px;
   background-image: url("../static/images/login.svg");
   /* Imagem de <a href="https://br.freepik.com/fotos-gratis/ai-gerado-de-cachorro-labrador-retriever_58598246.htm#query=cachorro&position=19&from_view=search&track=sph">Freepik</a> */
@@ -98,7 +98,7 @@ export default {
 }
 
 @media only screen and (max-width: 960px) {
-  .second-column {
+  .signin-image {
     display: none;
   }
 }
