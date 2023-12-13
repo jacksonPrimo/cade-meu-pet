@@ -91,7 +91,7 @@ export default {
       try {
         const provider = new GoogleAuthProvider();
         const { credential } = await this.$fire.auth.signInWithPopup(provider)        
-        const response = await axios.post('auth/signinWithGoogle', { token: credential.accessToken })
+        const response = await axios.post('https://pet-connection-api.vercel.app/auth/signinWithGoogle', { token: credential.accessToken })
         this.finishSignin(response)
       } catch(e) {
         console.log(e)
@@ -102,7 +102,7 @@ export default {
     async signinWithForm(){
       this.$refs.signinForm.validate()
       if(this.valid) {
-        const response = await axios.post('auth/signin', {
+        const response = await axios.post('https://pet-connection-api.vercel.app/auth/signin', {
           email: this.email,
           password: this.password
         })
