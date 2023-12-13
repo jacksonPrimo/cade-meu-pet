@@ -39,10 +39,22 @@ export default {
     posts: [],
     selectedPost: null
   }),
-  mounted(){
+  async mounted(){
+    const postId = this.$route.query.postId
+    if(postId) {
+      await this.getPostByUrl(postId)
+    }
     this.getPosts({})
   },
   methods: {
+    async getPostByUrl(postId){
+      try {
+        const response = await this.$axios.get(`/post/${postId}`)
+        this.selectedPost = response.data
+      } catch(e) {
+        console.log(e)
+      }
+    },
     filter(filters){
       this.getPosts(filters)
     },
