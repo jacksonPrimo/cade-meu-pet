@@ -15,12 +15,20 @@ export default {
     marker: null,
     location: null,
   }),
+  props: {
+    initialLocation: {
+      type: Array,
+      required: false
+    }
+  },
   mounted() {
     setTimeout(()=>this.initializeMap(), 500)
   },
   methods: {
     initializeMap(){
-      this.map = L.map(this.$refs.map).setView([-12.256545945045046, -55.52556684608532], 4)
+      const location = this.initialLocation || [-12.256545945045046, -55.52556684608532]
+      const zoom = this.initialLocation ? 18 : 4
+      this.map = L.map(this.$refs.map).setView(location, zoom)
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
       }).addTo(this.map)
@@ -35,6 +43,9 @@ export default {
       this.map.addControl(searchControl)
       this.map.on('geosearch/showlocation', this.changedSearch)
       this.map.on('click', (e) => this.markLocation({ lat: e.latlng.lat, lng: e.latlng.lng }));
+      if(this.initialLocation) {
+       this.markLocation({lat: this.initialLocation[0], lng: this.initialLocation[1]})
+      }
     },
 
     changedSearch(e){
