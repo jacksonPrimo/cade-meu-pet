@@ -1,8 +1,7 @@
-require('dotenv').config();
 import { Axios } from "axios";
 
 const axios = new Axios({
-  baseURL: process.env.API_URL,
+  baseURL: "https://pet-connection-api.vercel.app/"
 })
 
 axios.interceptors.request.use((config) => {
