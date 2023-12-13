@@ -56,7 +56,8 @@ export default {
         this.currentStep = 1
         this.alertText = "Sua publicação foi cadastrada com sucesso!"
       } catch(e) {
-        this.alertText = e.response.data.message
+        console.log(e)
+        this.alertText = e.response?.data?.message || "Ocorreu um erro ao tentar cadastrar sua publicação"
       } finally {
         this.waiting = false
         this.alert = true
