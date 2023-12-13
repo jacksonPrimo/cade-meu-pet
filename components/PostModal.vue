@@ -106,7 +106,7 @@ export default {
       this.writing = true
       try {
         const response = await this.$axios.post('comment/create', params)
-        this.comments = response.data
+        this.comments.push(response.data)
       } catch(e) {
         alert(e.response.data.message)
       }
