@@ -1,14 +1,8 @@
+require('dotenv').config();
 import { Axios } from "axios";
- 
-let baseURL
-if(window.location.href.includes("localhost")) {
-  baseURL = "http://localhost:3000/"
-} else {
-  baseURL = "https://pet-connection-api.vercel.app/" //url da api de prod
-}
 
 const axios = new Axios({
-  baseURL,
+  baseURL: process.env.API_URL,
 })
 
 axios.interceptors.request.use((config) => {
