@@ -38,6 +38,13 @@
               </l-map>
             </client-only>
           </div>
+          <v-card-title>Outras informações</v-card-title>
+          <p>Gênero: {{ gender }}</p>
+          <p>Raça: {{ race }}</p>
+          <p>Chip: {{ post.chip }}</p>
+          <p>Situação: {{ situation }}</p>
+          <p v-if="post.situation == 'lost'">Recompensa: {{ post.reward }}</p>
+          <p>Descrição: {{ post.description }}</p>
           <v-card-title>Comentarios</v-card-title>
           <div class="pl-2 pr-2">
             <v-textarea
@@ -76,12 +83,13 @@
 
 <script>
 import { getAuthData } from '@/utils/auth'
+import { situationOpt, specieOpt, genderOpt } from '@/static/postOptions'
 
 export default {
   props: {
     post: {
       type: Object,
-      required: false,
+      required: true,
     },
   },
   data: () => ({
@@ -142,6 +150,18 @@ export default {
   computed: {
     openModal(){
       return !!this.post
+    },
+    gender(){
+      const options = genderOpt()
+      return options.find(o=>o.value == this.post.gender).text
+    },
+    race(){
+      const options = specieOpt()
+      return options.find(o=>o.value == this.post.race).text
+    },
+    situation(){
+      const options = situationOpt()
+      return options.find(o=>o.value == this.post.situation).text
     },
   }
 }

@@ -108,7 +108,7 @@
 <script>
 import { situationOpt, specieOpt, genderOpt } from '@/static/postOptions'
 import SelectableMap from '@/components/selectableMap.vue'
-import { uploadImage, randomImageId } from '@/utils/image'
+import { uploadImage } from '@/utils/image'
 import { getAuthData } from '@/utils/auth'
 
 export default {
