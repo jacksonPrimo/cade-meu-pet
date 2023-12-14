@@ -10,7 +10,7 @@
    <v-stepper-content :step="step">
     <v-file-input
       accept="image/*"
-      label="File input"
+      label="Selecione uma imagem"
       v-model="image"
     ></v-file-input>
     <v-btn

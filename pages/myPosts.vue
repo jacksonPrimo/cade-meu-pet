@@ -6,7 +6,7 @@
       :options.sync="options"
       class="elevation-1"
       :loading="loading"
-      loading-text="Loading... Please wait"
+      loading-text="Carregando... Aguarde um momento"
     >
       <template v-slot:item.actions="{ item }">
         <v-icon
@@ -43,13 +43,19 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <edit-post-modal v-if="selectedPostToEdit" :selectedPost="selectedPostToEdit" @closeModal="selectedPostToEdit=null"></edit-post-modal>
   </div>
 </template>
 
 <script>
+import EditPostModal from '@/components/EditPostModal'
+
 export default {
   name: "MyPosts",
   layout: "authenticated",
+  components: {
+    EditPostModal
+  },
   data: () => ({
     headers: [
       { text: 'Nome', value: 'name' },
@@ -83,6 +89,7 @@ export default {
   methods: {
     async getPosts(){
       try {
+        this.loading = true
         const { page, itemsPerPage } = this.options
         const response = await this.$axios.get(`/post/my?page=${page}&itemsPerPage=${itemsPerPage}`)
         this.posts = response.data.posts
@@ -94,7 +101,7 @@ export default {
       }
     },
     editItem(item) {
-      console.log('edit item', item)
+      this.selectedPostToEdit = item
     },
     deleteItem(item){
       this.selectedPostToDelete = item

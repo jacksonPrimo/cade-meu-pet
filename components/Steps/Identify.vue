@@ -11,7 +11,6 @@
     <v-form ref="identifyForm" v-model="valid">
       <v-text-field
         label="Nome"
-        :rules="isLost ? [ value => value ? true : 'Nome é obrigatório' ] : []"
         v-model="name"
         solo
       ></v-text-field>
