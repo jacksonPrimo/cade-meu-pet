@@ -16,7 +16,7 @@
           router
           exact
         >
-          <v-icon>{{item.icon}}</v-icon>
+          <v-icon class="mr-1">{{item.icon}}</v-icon>
           <span>{{item.title}}</span>
         </v-btn>
 
@@ -89,7 +89,7 @@ export default {
           to: '/posts'
         },
         {
-          icon: 'mdi-paw',
+          icon: 'mdi-list-box-outline',
           title: 'Minhas Publicações',
           to: '/myPosts'
         },
@@ -99,7 +99,7 @@ export default {
           to: '/accountPreferences'
         },
       ],
-      title: 'Pet Connection'
+      title: 'PET CONNECTION'
     }
   },
   async beforeMount(){
