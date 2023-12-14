@@ -85,8 +85,13 @@ export default {
         },
         {
           icon: 'mdi-paw',
-          title: 'Postagens',
+          title: 'Publicações',
           to: '/posts'
+        },
+        {
+          icon: 'mdi-paw',
+          title: 'Minhas Publicações',
+          to: '/myPosts'
         },
         {
           icon: 'mdi-account-cog-outline',
