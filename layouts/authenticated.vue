@@ -96,7 +96,7 @@ export default {
         {
           icon: 'mdi-account-cog-outline',
           title: 'Preferências',
-          to: '/accountPreferences'
+          to: '/preferences'
         },
       ],
       title: 'PET CONNECTION'
