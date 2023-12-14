@@ -51,14 +51,22 @@
             ></v-textarea>
           </div>
           <div class="ml-2 mb-2">
-            <v-chip class="pt-7 pb-7 my-2 mr-2" v-for="(comment, index) of comments" :key="index" style="text-wrap: wrap; min-width: 98%;">
-              <v-avatar left  size="56">
-                <v-img :src="comment.author.profileImage"></v-img>
-              </v-avatar>
-              <div>
+            <div class="comment-container" v-for="(comment, index) of comments" :key="index">
+              <img class="comment-image" :src="comment.author.profileImage"/>
+              <div class="comment-description">
                 {{ comment.description }}                
               </div>
-            </v-chip>
+              <div class="comment-action" v-if="comment.author.id == userId">
+                <v-icon
+                  color="red"
+                  small
+                  :disabled="comment.id == deleting"
+                  @click="deleteComment(comment.id)"
+                >
+                  mdi-delete
+                </v-icon>
+              </div>
+            </div>
           </div>
         </v-card-text>
       </v-card>
@@ -67,6 +75,8 @@
 </template>
 
 <script>
+import { getAuthData } from '@/utils/auth'
+
 export default {
   props: {
     post: {
@@ -77,10 +87,13 @@ export default {
   data: () => ({
     comment: "",
     writing: false,
+    deleting: null,
     comments: [],
-    page: 0
+    page: 0,
+    userId: ""
   }),
   mounted(){
+    this.userId = getAuthData().userId
     this.getComments()
   },
   methods: {
@@ -111,6 +124,19 @@ export default {
         alert(e.response.data.message)
       }
       this.writing = false
+    },
+    async deleteComment(id){
+      try {
+        this.deleting = id
+        await this.$axios.delete(`comment/${id}`)
+        const index = this.comments.findIndex(c => c.id == id)
+        this.comments.splice(index, 1)
+      } catch(e) {
+        alert('Desculpe ocorreu um erro ao deletar esse comantário')
+        console.log(e)
+      } finally {
+        this.deleting = null
+      }
     }
   },
   computed: {
@@ -122,4 +148,27 @@ export default {
 </script>
 
 <style lang="scss">
+.comment-container {
+  display: flex;
+  flex-direction: row;
+  text-wrap: wrap; 
+  width: 98%;
+  min-height: 30px;
+  padding: 10px 5px; 
+  margin: 5px 2px;
+  background-color: rgba(0, 0, 0, 0.253);
+  border-radius: 5px;
+
+  .comment-image {
+    width: 23px;
+    height: 23px;
+    border-radius: 50%;
+  }
+
+  .comment-description {
+    width: 90%;
+    padding: 0 5px;
+    text-align: justify;
+  }
+}
 </style>
