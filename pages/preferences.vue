@@ -172,10 +172,9 @@ export default {
       this.notification = response.data.notification
       this.notificationLat = response.data.notificationLat    
       this.notificationLng = response.data.notificationLng    
+      this.loading = false
     } catch(e) {
       alert(e.response.data.message)
-    } finally {
-      this.loading = false
     }
   },
   methods: {
