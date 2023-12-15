@@ -7,6 +7,8 @@
       class="elevation-1"
       :loading="loading"
       loading-text="Carregando... Aguarde um momento"
+      hide-default-footer
+      hide-default-header
     >
       <template v-slot:item.actions="{ item }">
         <v-icon
@@ -32,6 +34,12 @@
         </v-btn>
       </template>
     </v-data-table>
+    <div class="text-center" v-if="total > 1">
+      <v-pagination
+        v-model="page"
+        :length="total"
+      ></v-pagination>
+    </div>
     <v-dialog v-model="deleteAlert" max-width="500px">
       <v-card>
         <v-card-title class="text-h5">Deseja realmente excluir esta publicação?</v-card-title>
@@ -67,6 +75,8 @@ export default {
       { text: 'Ações', value: 'actions', sortable: false },
     ],
     posts: [],
+    page: 1,
+    limit: 20,
     total: 0,
     loading: true,
     options: {},
@@ -79,7 +89,7 @@ export default {
     this.getPosts()
   },
   watch: {
-    options: {
+    page: {
       handler () {
         this.getPosts()
       },
@@ -90,8 +100,7 @@ export default {
     async getPosts(){
       try {
         this.loading = true
-        const { page, itemsPerPage } = this.options
-        const response = await this.$axios.get(`/post/my?page=${page}&itemsPerPage=${itemsPerPage}`)
+        const response = await this.$axios.get(`/post/my?page=${this.page}&limit=${this.limit}`)
         this.posts = response.data.posts
         this.total = response.data.total
       } catch(e) {
