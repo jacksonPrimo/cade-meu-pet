@@ -4,18 +4,28 @@
       <filters @filter="filter"></filters>
     </v-col>
     <v-col sm="12" md="9">
-      <v-row v-if="posts.length">
-        <v-col sm="12" md="4" lg="3" v-for="(post, index) in posts" :key="index">
-          <div class="post" @click="selectedPost = post">
-            <PostCard :post="post"></PostCard>
-          </div>
-        </v-col>
-      </v-row>
+      <div  v-if="posts.length">
+        <v-row>
+          <v-col sm="12" md="4" lg="3" v-for="(post, index) in posts" :key="index">
+            <div class="post" @click="selectedPost = post">
+              <PostCard :post="post"></PostCard>
+            </div>
+          </v-col>
+        </v-row>
+
+        <div class="text-center" v-if="total > 1">
+          <v-pagination
+            v-model="page"
+            :length="total"
+          ></v-pagination>
+        </div>
+      </div>
       <div v-else class="text-center mt-12 text-h3">
         <div>Desculpe não encontramos nenhum resultado</div>
         <v-icon x-large>mdi-emoticon-sad</v-icon>
       </div>
     </v-col>
+
     <PostModal v-if="selectedPost" :post="selectedPost" @closeModal="selectedPost=null"></PostModal>
   </v-row>
 </template>
@@ -34,17 +44,27 @@ export default {
     Filters
   },
   data: ()=>({
-    page: 0,
-    limit: 16,
+    page: 1,
+    limit: 12,
+    total: 0,
     posts: [],
+    lastFilters: {},
     selectedPost: null
   }),
+  watch: {
+    page: {
+      handler () {
+        this.getPosts()
+      },
+      deep: true,
+    },
+  },
   async mounted(){
     const postId = this.$route.query.postId
     if(postId) {
       await this.getPostByUrl(postId)
     }
-    this.getPosts({})
+    this.getPosts()
   },
   methods: {
     async getPostByUrl(postId){
@@ -56,14 +76,17 @@ export default {
       }
     },
     filter(filters){
-      this.getPosts(filters)
+      this.lastFilters = filters
+      this.getPosts()
     },
-    async getPosts(filters){
-      const params = new URLSearchParams(filters)
+    async getPosts(){
+      const params = new URLSearchParams(this.lastFilters)
       try {
-        const response = await this.$axios.get(`/post/list?${params}`)
-        this.posts = response.data
+        const response = await this.$axios.get(`/post/list?page=${this.page}&limit=${this.limit}&${params}`)
+        this.posts = response.data.posts
+        this.total = response.data.total
       } catch(e) {
+        console.log(e)
         alert('Ocorreu um erro ao listar as publicações')
       }
     },
