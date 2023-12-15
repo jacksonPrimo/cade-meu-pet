@@ -74,6 +74,9 @@
                 </v-icon>
               </div>
             </div>
+            <div v-if="total > 1 && total != page" class="text-center">
+              <a @click="loadMoreComments">Carregar mais</a>
+            </div>
           </div>
         </v-card-text>
       </v-card>
@@ -96,8 +99,11 @@ export default {
     comment: "",
     writing: false,
     deleting: null,
+    loading: false,
     comments: [],
-    page: 0,
+    page: 1,
+    limit: 10,
+    total: 0,
     userId: ""
   }),
   mounted(){
@@ -109,10 +115,18 @@ export default {
       this.comments = []
       this.$emit('closeModal')
     },
+    loadMoreComments(){
+      if(this.loading) return
+      this.page += 1
+      this.getComments()
+    },
     async getComments(){
       try {
-        const response = await this.$axios.get(`comment/list?page=${this.page}&postId=${this.post.id}`)
-        this.comments = response.data
+        this.loading = true
+        const response = await this.$axios.get(`comment/list?page=${this.page}&limit=${this.limit}&postId=${this.post.id}`)
+        this.comments = this.comments.concat(response.data.comments)
+        this.total = response.data.total
+        this.loading = false
       } catch(e) {
         alert(e.response.data.message)
       }
