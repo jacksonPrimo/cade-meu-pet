@@ -2,7 +2,7 @@
   <div class="container-box grey lighten-3">
     <div class="box white">
       <v-row style="height: 100%;">
-        <v-col class="text-center px-16 signin-form">
+        <v-col class="text-center signin-form">
           <div class="welcome">
             <span>
               Bem Vindo
@@ -55,6 +55,7 @@ export default {
 }
 
 .signin-form {
+  padding: 12px 65px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -100,6 +101,12 @@ export default {
 @media only screen and (max-width: 960px) {
   .signin-image {
     display: none;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .signin-form {
+    padding: 12px 2px;
   }
 }
 </style>
