@@ -7,7 +7,7 @@
       <div  v-if="posts.length">
         <v-row>
           <v-col sm="12" md="4" lg="3" v-for="(post, index) in posts" :key="index">
-            <div class="post" @click="selectedPost = post">
+            <div class="post" @click="selectedPostId = post.id">
               <PostCard :post="post"></PostCard>
             </div>
           </v-col>
@@ -26,7 +26,7 @@
       </div>
     </v-col>
 
-    <PostModal v-if="selectedPost" :post="selectedPost" @closeModal="selectedPost=null"></PostModal>
+    <PostModal v-if="selectedPostId" :postId="selectedPostId" @closeModal="selectedPostId=null"></PostModal>
   </v-row>
 </template>
 
@@ -49,7 +49,7 @@ export default {
     total: 0,
     posts: [],
     lastFilters: {},
-    selectedPost: null
+    selectedPostId: null
   }),
   watch: {
     page: {
@@ -61,20 +61,10 @@ export default {
   },
   async mounted(){
     const postId = this.$route.query.postId
-    if(postId) {
-      await this.getPostByUrl(postId)
-    }
+    if(postId) this.selectedPostId = postId
     this.getPosts()
   },
   methods: {
-    async getPostByUrl(postId){
-      try {
-        const response = await this.$axios.get(`/post/${postId}`)
-        this.selectedPost = response.data
-      } catch(e) {
-        console.log(e)
-      }
-    },
     filter(filters){
       this.lastFilters = filters
       this.getPosts()

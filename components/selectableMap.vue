@@ -19,6 +19,11 @@ export default {
     initialLocation: {
       type: Array,
       required: false
+    },
+    canEdit: {
+      type: Boolean,
+      default: true,
+      required: false
     }
   },
   mounted() {
@@ -32,6 +37,16 @@ export default {
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
       }).addTo(this.map)
+      if(this.canEdit) this.addSearchControl()
+      if(this.canEdit) {
+        this.map.on('click', (e) => this.markLocation({ lat: e.latlng.lat, lng: e.latlng.lng }));
+      }
+      if(this.initialLocation) {
+       this.markLocation({lat: this.initialLocation[0], lng: this.initialLocation[1]})
+      }
+    },
+
+    addSearchControl(){
       const provider = new OpenStreetMapProvider()
       const searchControl = new GeoSearchControl({
         provider,
@@ -42,12 +57,7 @@ export default {
       })
       this.map.addControl(searchControl)
       this.map.on('geosearch/showlocation', this.changedSearch)
-      this.map.on('click', (e) => this.markLocation({ lat: e.latlng.lat, lng: e.latlng.lng }));
-      if(this.initialLocation) {
-       this.markLocation({lat: this.initialLocation[0], lng: this.initialLocation[1]})
-      }
     },
-
     changedSearch(e){
       this.map.removeLayer(e.marker);
       this.markLocation({ lat: e.location.y, lng: e.location.x, label: e.location.label })

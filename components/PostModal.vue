@@ -7,7 +7,7 @@
       scrollable
       style="overflow-x: hidden;"
     >
-      <v-card v-if="openModal">
+      <v-card v-if="post">
         <v-card-title>
           <span class="text-h5 mr-auto">{{post.name}}</span>
           <v-btn
@@ -30,14 +30,7 @@
           <v-card-title>
             Localização
           </v-card-title>
-          <div id="map-wrap" style="height: 50vh;">
-            <client-only>
-              <l-map :zoom=13 :center="[post.addressLat, post.addressLng]">
-                <l-tile-layer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"></l-tile-layer>
-                <l-marker :lat-lng="[post.addressLat, post.addressLng]"></l-marker>
-              </l-map>
-            </client-only>
-          </div>
+          <selectable-map :canEdit="false" :initialLocation="[post.addressLat, post.addressLng]"></selectable-map>
           <v-card-title>Outras informações</v-card-title>
           <p>Gênero: {{ gender }}</p>
           <p>Raça: {{ race }}</p>
@@ -45,6 +38,9 @@
           <p>Situação: {{ situation }}</p>
           <p v-if="post.situation == 'lost'">Recompensa: {{ post.reward }}</p>
           <p>Descrição: {{ post.description }}</p>
+          <v-card-title>Dados de contato</v-card-title>
+          <p>Telefone: {{ post.author.phone }}</p>
+          <p>Email: {{ post.author.email }}</p>
           <v-card-title>Comentarios</v-card-title>
           <div class="pl-2 pr-2">
             <v-textarea
@@ -53,7 +49,7 @@
               name="input-7-4"
               label="Deixe um comentário"
               v-model="comment"
-              :disabled="writing"
+              :disabled="writingComment"
               @keydown.enter="writeAComment"
             ></v-textarea>
           </div>
@@ -67,7 +63,7 @@
                 <v-icon
                   color="red"
                   small
-                  :disabled="comment.id == deleting"
+                  :disabled="comment.id == deletingComment"
                   @click="deleteComment(comment.id)"
                 >
                   mdi-delete
@@ -87,19 +83,25 @@
 <script>
 import { getAuthData } from '@/utils/auth'
 import { situationOpt, specieOpt, genderOpt } from '@/static/postOptions'
+import SelectableMap from '@/components/selectableMap.vue'
 
 export default {
+  components: {
+    SelectableMap
+  },
   props: {
-    post: {
-      type: Object,
+    postId: {
+      type: String,
       required: true,
     },
   },
   data: () => ({
+    post: null,
+    loadingPost: false,
     comment: "",
-    writing: false,
-    deleting: null,
-    loading: false,
+    writingComment: false,
+    deletingComment: null,
+    loadingComments: false,
     comments: [],
     page: 1,
     limit: 10,
@@ -108,25 +110,35 @@ export default {
   }),
   mounted(){
     this.userId = getAuthData().userId
-    this.getComments()
+    this.getPost()
   },
   methods: {
+    async getPost(){
+      try {
+        const response = await this.$axios.get(`/post/${this.postId}`)
+        this.post = response.data
+        this.getComments()
+      } catch(e) {
+        this.closeModal()
+        console.log(e)
+      }
+    },
     closeModal(){
       this.comments = []
       this.$emit('closeModal')
     },
     loadMoreComments(){
-      if(this.loading) return
+      if(this.loadingComments) return
       this.page += 1
       this.getComments()
     },
     async getComments(){
       try {
-        this.loading = true
+        this.loadingComments = true
         const response = await this.$axios.get(`comment/list?page=${this.page}&limit=${this.limit}&postId=${this.post.id}`)
         this.comments = this.comments.concat(response.data.comments)
         this.total = response.data.total
-        this.loading = false
+        this.loadingComments = false
       } catch(e) {
         alert(e.response.data.message)
       }
@@ -138,18 +150,18 @@ export default {
         description: this.comment,
         postId: this.post.id,
       }
-      this.writing = true
+      this.writingComment = true
       try {
         const response = await this.$axios.post('comment/create', params)
         this.comments.push(response.data)
       } catch(e) {
         alert(e.response.data.message)
       }
-      this.writing = false
+      this.writingComment = false
     },
     async deleteComment(id){
       try {
-        this.deleting = id
+        this.deletingComment = id
         await this.$axios.delete(`comment/${id}`)
         const index = this.comments.findIndex(c => c.id == id)
         this.comments.splice(index, 1)
@@ -157,7 +169,7 @@ export default {
         alert('Desculpe ocorreu um erro ao deletar esse comantário')
         console.log(e)
       } finally {
-        this.deleting = null
+        this.deletingComment = null
       }
     }
   },
