@@ -48,57 +48,15 @@
   </div>
 </template>
 <script>
+import { situationOpt, specieOpt, genderOpt } from '@/static/postOptions'
 export default {
   name: 'BasicInfo',
   data: () => ({
     step: 1,
     valid: false,
-    situationOptions: [
-      {
-        text: "Perdido",
-        value: "lost"
-      },
-      {
-        text: "Encontrado",
-        value: "found"
-      },
-      {
-        text: "Para adoção",
-        value: "adoption"
-      },
-    ],
-    specieOptions: [
-      {
-        text: "Cão",
-        value: "dog"
-      },
-      {
-        text: "Gato",
-        value: "cat"
-      },
-      {
-        text: "Coelho",
-        value: "rabbit"
-      },
-      {
-        text: "Passaro",
-        value: "bird"
-      },
-      {
-        text: "Outro",
-        value: "other"
-      },
-    ],
-    genderOptions: [
-      {
-        text: "Macho",
-        value: "M"
-      },
-      {
-        text: "Fêmea",
-        value: "F"
-      },
-    ],
+    situationOptions: situationOpt(),
+    specieOptions: specieOpt(),
+    genderOptions: genderOpt(),
     situation: "",
     race: "",
     gender: "",

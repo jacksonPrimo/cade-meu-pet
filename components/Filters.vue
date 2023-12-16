@@ -90,27 +90,6 @@
       ></v-combobox>
       </div>
     </div>
-
-    <div class="filter mt-4">
-      <span class="filter-subtitle">
-        Ordenar por
-      </span>
-      <div>
-        <v-radio-group v-model="filters.sort">
-          <v-radio
-            label="Atividade"
-            value="created"
-          ></v-radio>
-
-          <v-radio
-            disabled
-            label="Distance"
-            value="distance"
-          ></v-radio>
-        </v-radio-group>
-      </div>
-    </div>
-
     <div class="filter mt-4">
       <v-btn outlined color="primary" @click="filter">Filtrar</v-btn>
     </div>
@@ -123,63 +102,20 @@ import 'leaflet/dist/leaflet.css'
 import 'leaflet-geosearch/dist/geosearch.css'
 import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch'
 import { getLimitOfRange } from '@/utils/location'
+import { situationOpt, specieOpt, genderOpt } from '@/static/postOptions'
 
 export default {
   name: 'Filters',
   data: () => ({
-    situationOptions: [
-      {
-        text: "Perdido",
-        value: "lost"
-      },
-      {
-        text: "Encontrado",
-        value: "found"
-      },
-      {
-        text: "Para adoção",
-        value: "adoption"
-      },
-    ],
-    specieOptions: [
-      {
-        text: "Cão",
-        value: "dog"
-      },
-      {
-        text: "Gato",
-        value: "cat"
-      },
-      {
-        text: "Coelho",
-        value: "rabbit"
-      },
-      {
-        text: "Passaro",
-        value: "bird"
-      },
-      {
-        text: "Outro",
-        value: "other"
-      },
-    ],
-    genderOptions: [
-      {
-        text: "Macho",
-        value: "M"
-      },
-      {
-        text: "Fêmea",
-        value: "F"
-      },
-    ],
+    situationOptions: situationOpt(),
+    specieOptions: specieOpt(),
+    genderOptions: genderOpt(),
     filters: {
       name: '',
       chip: '',
       distance: 5,
       situation: [],
       race: [],
-      sort: "created",
       gender: '',
       biggerThanLat: '',
       smallerThanLat: '',

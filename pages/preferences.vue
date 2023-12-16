@@ -5,7 +5,7 @@
       <!-- <a href="https://br.freepik.com/vetores-gratis/ilustracao-do-conceito-de-processamento_7126211.htm#query=config&position=9&from_view=search&track=sph&uuid=69198325-e013-401a-8c54-941a64a8a532">Imagem de storyset</a> no Freepik -->
     </v-col>
     <v-col cols="6" class="px-16">
-      <v-form ref="accountPreferenceForm" v-model="valid">
+      <v-form ref="accountPreferenceForm" v-model="valid" :disabled="loading">
         <div class="input-image">
           <img :src="profileImage ? profileImage : 'images/profile.svg'" class="profile-image">
           <!-- <a href="https://br.freepik.com/vetores-gratis/ilustracao-do-conceito-de-processamento_7126211.htm#query=config&position=9&from_view=search&track=sph&uuid=69198325-e013-401a-8c54-941a64a8a532">Imagem de storyset</a> no Freepik -->
@@ -84,18 +84,20 @@
       </v-form>
 
       <v-switch
+        :disabled="loading"
         v-model="darkTheme"
         label="Tema escuro"
         @change="changeDarkTheme"
       ></v-switch>
       
       <v-switch
+        :disabled="loading"
         v-model="notification"
         label="Ativar notificações"
         @change="changeActiveNotifications"
       ></v-switch>
 
-      <v-btn v-if="notification" outlined color="blue darken-2" @click="openModal = true">
+      <v-btn :disabled="loading" v-if="notification" outlined color="blue darken-2" @click="openModal = true">
         <v-icon color="blue darken-2">mdi-map</v-icon>
         Endereço para o foco das notificações
       </v-btn>
@@ -170,10 +172,9 @@ export default {
       this.notification = response.data.notification
       this.notificationLat = response.data.notificationLat    
       this.notificationLng = response.data.notificationLng    
+      this.loading = false
     } catch(e) {
       alert(e.response.data.message)
-    } finally {
-      this.loading = false
     }
   },
   methods: {

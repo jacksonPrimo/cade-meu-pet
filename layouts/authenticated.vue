@@ -16,7 +16,7 @@
           router
           exact
         >
-          <v-icon>{{item.icon}}</v-icon>
+          <v-icon class="mr-1">{{item.icon}}</v-icon>
           <span>{{item.title}}</span>
         </v-btn>
 
@@ -62,6 +62,15 @@
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+
+        <v-list-item router exact @click="logout">
+          <v-list-item-action>
+            <v-icon>mdi-exit-to-app</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title color="red">Sair</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
     <v-footer app>
@@ -85,16 +94,21 @@ export default {
         },
         {
           icon: 'mdi-paw',
-          title: 'Postagens',
+          title: 'Publicações',
           to: '/posts'
+        },
+        {
+          icon: 'mdi-list-box-outline',
+          title: 'Minhas Publicações',
+          to: '/myPosts'
         },
         {
           icon: 'mdi-account-cog-outline',
           title: 'Preferências',
-          to: '/accountPreferences'
+          to: '/preferences'
         },
       ],
-      title: 'Pet Connection'
+      title: 'PET CONNECTION'
     }
   },
   async beforeMount(){
