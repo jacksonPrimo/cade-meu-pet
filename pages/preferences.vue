@@ -1,10 +1,10 @@
 <template>
-  <v-row>
-    <v-col cols="6">
+  <div class="preferences">
+    <div class="first-column">
       <img src="images/preferences.svg">
       <!-- <a href="https://br.freepik.com/vetores-gratis/ilustracao-do-conceito-de-processamento_7126211.htm#query=config&position=9&from_view=search&track=sph&uuid=69198325-e013-401a-8c54-941a64a8a532">Imagem de storyset</a> no Freepik -->
-    </v-col>
-    <v-col cols="6" class="px-16">
+    </div>
+    <div class="second-column">
       <v-form ref="accountPreferenceForm" v-model="valid" :disabled="loading">
         <div class="input-image">
           <img :src="profileImage ? profileImage : 'images/profile.svg'" class="profile-image">
@@ -125,8 +125,8 @@
           </v-card-text>
         </v-card>
       </v-dialog>
-    </v-col>
-  </v-row>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -174,7 +174,7 @@ export default {
       this.notificationLng = response.data.notificationLng    
       this.loading = false
     } catch(e) {
-      alert(e.response.data.message)
+      alert(e.response?.data?.message || "Ocorreu um erro inesperado")
     }
   },
   methods: {
@@ -243,6 +243,12 @@ export default {
 </script>
 
 <style lang="scss">
+.preferences {
+  display: flex;
+  .first-column, .second-column {
+    width: 50%;
+  }
+}
 .input-image {
   display: flex;
   flex-direction: column;
@@ -255,5 +261,16 @@ export default {
 }
 .map-btn:hover {
   cursor: pointer;
+}
+
+@media only screen and (max-width: 700px) {
+  .preferences {
+    .first-column { 
+      display: none;
+    }
+    .second-column {
+      width: 100%;
+    }
+  }
 }
 </style>

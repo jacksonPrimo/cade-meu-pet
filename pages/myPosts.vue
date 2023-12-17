@@ -8,7 +8,7 @@
       :loading="loading"
       loading-text="Carregando... Aguarde um momento"
       hide-default-footer
-      hide-default-header
+      disable-sort
     >
       <template v-slot:item.actions="{ item }">
         <v-icon

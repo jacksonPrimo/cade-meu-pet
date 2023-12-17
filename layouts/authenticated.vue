@@ -129,6 +129,9 @@ export default {
   .leaflet-control-geosearch .results > * {
     color: black !important
   }
+  .mobile-menu {
+    z-index: 1000;
+  }
   @media only screen and (min-width: 800px) {
     .mobile-menu {
       display: none;

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="filters">
     <div class="filter-title">
       Filtros
     </div>
@@ -34,7 +34,7 @@
       </span>
       
       <div>
-        <div ref="map" class="map-container"></div>
+        <div ref="map" class="map-containerr"></div>
         <v-subheader class="pl-0">
           Distancia máxima {{filters.distance}}km
         </v-subheader>
@@ -197,19 +197,25 @@ export default {
 </script>
 
 <style lang="scss">
-.filter-title {
-  font-weight: bold;
-  font-size: 24px;
-}
-
-.filter-subtitle {
-  font-weight: 500;
-  font-size: 18px;
-}
-
-.filter {
-  .v-text-field__details, .v-messages {
-    display: none;
+.filters {
+  .map-containerr {
+    z-index: 1;
+    height: 400px;
+  }
+  .filter-title {
+    font-weight: bold;
+    font-size: 24px;
+  }
+  
+  .filter-subtitle {
+    font-weight: 500;
+    font-size: 18px;
+  }
+  
+  .filter {
+    .v-text-field__details, .v-messages {
+      display: none;
+    }
   }
 }
 </style>
