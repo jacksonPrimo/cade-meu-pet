@@ -1,14 +1,14 @@
 <template>
-  <v-row>
-    <v-col cols="6 create-post-image"></v-col>
-    <v-col cols="6">
+  <div class="create-post">
+    <div class="first-column"></div>
+    <div class="second-column">
       <v-stepper v-model="currentStep" vertical>
         <basic-info :currentStep="currentStep" @next="next"></basic-info>
         <identify :currentStep="currentStep" @next="next" @previous="previous"></identify>
         <post-image :currentStep="currentStep" @next="next" @previous="previous"></post-image>
         <location :currentStep="currentStep" @next="finish" @previous="previous" :waiting="waiting"></location>
       </v-stepper>
-    </v-col>
+    </div>
     <v-snackbar v-model="alert">
       {{ alertText }}
 
@@ -18,7 +18,7 @@
         </v-btn>
       </template>
     </v-snackbar>
-  </v-row>
+  </div>
 </template>
 
 <script>
@@ -51,10 +51,9 @@ export default {
       const params = {...this.$store.state.post.postToCreate}
       params.image = await this.uploadFile(params.image)
       try {
-        await this.$axios.post('/post/create', params)
+        const response = await this.$axios.post('/post/create', params)
         this.$store.dispatch('post/setPostToCreate', {})
-        this.currentStep = 1
-        this.alertText = "Sua publicação foi cadastrada com sucesso!"
+        this.$router.push(`/posts?postId=${response.data.id}`)
       } catch(e) {
         console.log(e)
         this.alertText = e.response?.data?.message || "Ocorreu um erro ao tentar cadastrar sua publicação"
@@ -73,12 +72,29 @@ export default {
 </script>
 
 <style lang="scss">
-  .create-post-image {
-    height: 90vh;
-    background-image: url("../static/images/found.jpg");
-    /* Image by <a href="https://www.freepik.com/free-photo/small-dog-being-adorable-studio_15615918.htm#query=animais&position=19&from_view=search&track=sph&uuid=1e54d905-dad0-4749-99a1-774e48f5867e">Freepik</a> */
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
+  .create-post {
+    .first-column {
+      height: 90vh;
+      width: 50%;
+      background-image: url("../static/images/found.jpg");
+      /* Image by <a href="https://www.freepik.com/free-photo/small-dog-being-adorable-studio_15615918.htm#query=animais&position=19&from_view=search&track=sph&uuid=1e54d905-dad0-4749-99a1-774e48f5867e">Freepik</a> */
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+    .second-column {
+      width: 50%;
+    }
   }
+
+  @media only screen and (max-width: 700px) {
+  .create-post {
+    .first-column { 
+      display: none;
+    }
+    .second-column {
+      width: 100%;
+    }
+  }
+}
 </style>

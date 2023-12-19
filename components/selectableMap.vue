@@ -77,6 +77,7 @@ export default {
 
 <style>
 .map-container {
+  z-index: 2000;
   height: 400px;
 }
 </style>

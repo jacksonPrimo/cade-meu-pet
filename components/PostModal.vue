@@ -70,7 +70,7 @@
                 </v-icon>
               </div>
             </div>
-            <div v-if="total > 1 && total != page" class="text-center">
+            <div v-if="showMoreComments" class="text-center">
               <a @click="loadMoreComments">Carregar mais</a>
             </div>
           </div>
@@ -189,6 +189,9 @@ export default {
       const options = situationOpt()
       return options.find(o=>o.value == this.post.situation).text
     },
+    showMoreComments(){
+      return this.total > 1 && this.total !== this.page
+    }
   }
 }
 </script>

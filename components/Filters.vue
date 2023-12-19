@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="filters">
     <div class="filter-title">
       Filtros
     </div>
@@ -34,7 +34,7 @@
       </span>
       
       <div>
-        <div ref="map" class="map-container"></div>
+        <div ref="map" class="map-containerr"></div>
         <v-subheader class="pl-0">
           Distancia máxima {{filters.distance}}km
         </v-subheader>
@@ -54,12 +54,13 @@
         Situação do pet
       </span>
       <div>
-        <v-combobox
+        <v-select
           multiple
           small-chips
+          persistent-hint
           :items="situationOptions"
           v-model="filters.situation"
-        ></v-combobox>
+        ></v-select>
       </div>
     </div>
 
@@ -68,12 +69,13 @@
         Espécie
       </span>
       <div>
-        <v-combobox
-          multiple
-          small-chips
-          :items="specieOptions"
+        <v-select
           v-model="filters.race"
-        ></v-combobox>
+          :items="specieOptions"
+          multiple
+          persistent-hint
+          small-chips
+        ></v-select>
       </div>
     </div>
 
@@ -82,12 +84,13 @@
         Gênero
       </span>
       <div>
-        <v-combobox
-        multiple
-        small-chips
-        :items="genderOptions"
+      <v-select
         v-model="filters.gender"
-      ></v-combobox>
+        :items="genderOptions"
+        multiple
+        persistent-hint
+        small-chips
+      ></v-select>
       </div>
     </div>
     <div class="filter mt-4">
@@ -109,7 +112,16 @@ export default {
   data: () => ({
     situationOptions: situationOpt(),
     specieOptions: specieOpt(),
-    genderOptions: genderOpt(),
+    genderOptions: [
+      {
+        text: "Macho",
+        value: "M"
+      },
+      {
+        text: "Fêmea",
+        value: "F"
+      },
+    ],
     filters: {
       name: '',
       chip: '',
@@ -197,19 +209,25 @@ export default {
 </script>
 
 <style lang="scss">
-.filter-title {
-  font-weight: bold;
-  font-size: 24px;
-}
-
-.filter-subtitle {
-  font-weight: 500;
-  font-size: 18px;
-}
-
-.filter {
-  .v-text-field__details, .v-messages {
-    display: none;
+.filters {
+  .map-containerr {
+    z-index: 1;
+    height: 400px;
+  }
+  .filter-title {
+    font-weight: bold;
+    font-size: 24px;
+  }
+  
+  .filter-subtitle {
+    font-weight: 500;
+    font-size: 18px;
+  }
+  
+  .filter {
+    .v-text-field__details, .v-messages {
+      display: none;
+    }
   }
 }
 </style>
