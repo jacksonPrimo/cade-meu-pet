@@ -80,9 +80,6 @@ export default {
         alert('Ocorreu um erro ao listar as publicações')
       }
     },
-    extractValues(selecteds){
-      return selecteds.map(s => s.value)
-    }
   }
 }
 </script>

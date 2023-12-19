@@ -54,12 +54,13 @@
         Situação do pet
       </span>
       <div>
-        <v-combobox
+        <v-select
           multiple
           small-chips
+          persistent-hint
           :items="situationOptions"
           v-model="filters.situation"
-        ></v-combobox>
+        ></v-select>
       </div>
     </div>
 
@@ -68,12 +69,13 @@
         Espécie
       </span>
       <div>
-        <v-combobox
-          multiple
-          small-chips
-          :items="specieOptions"
+        <v-select
           v-model="filters.race"
-        ></v-combobox>
+          :items="specieOptions"
+          multiple
+          persistent-hint
+          small-chips
+        ></v-select>
       </div>
     </div>
 
@@ -82,12 +84,13 @@
         Gênero
       </span>
       <div>
-        <v-combobox
-        multiple
-        small-chips
-        :items="genderOptions"
+      <v-select
         v-model="filters.gender"
-      ></v-combobox>
+        :items="genderOptions"
+        multiple
+        persistent-hint
+        small-chips
+      ></v-select>
       </div>
     </div>
     <div class="filter mt-4">
@@ -109,7 +112,16 @@ export default {
   data: () => ({
     situationOptions: situationOpt(),
     specieOptions: specieOpt(),
-    genderOptions: genderOpt(),
+    genderOptions: [
+      {
+        text: "Macho",
+        value: "M"
+      },
+      {
+        text: "Fêmea",
+        value: "F"
+      },
+    ],
     filters: {
       name: '',
       chip: '',

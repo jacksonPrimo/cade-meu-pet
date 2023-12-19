@@ -95,6 +95,7 @@ export default {
 
   axios: {
     baseUrl: 'https://pet-connection-api.vercel.app/',
+    // baseUrl: 'http://localhost:3000/',
   },
 
   pwa: {
