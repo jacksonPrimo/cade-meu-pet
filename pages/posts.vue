@@ -18,25 +18,37 @@
       </div>
     </v-col>
     <v-col sm="12" md="9">
-      <div  v-if="posts.length">
+      <div v-if="loading">
         <v-row>
-          <v-col sm="12" md="4" lg="3" v-for="(post, index) in posts" :key="index">
-            <div class="post" @click="selectedPostId = post.id">
-              <PostCard :post="post"></PostCard>
-            </div>
+          <v-col sm="12" md="4" lg="3" v-for="(load, index) in 4" :key="index">
+            <v-skeleton-loader
+              class="mx-auto"
+              type="card"
+            ></v-skeleton-loader>
           </v-col>
         </v-row>
-
-        <div class="text-center" v-if="total > 1">
-          <v-pagination
-            v-model="page"
-            :length="total"
-          ></v-pagination>
-        </div>
       </div>
-      <div v-else class="text-center mt-12 text-h3">
-        <div>Desculpe não encontramos nenhum resultado</div>
-        <v-icon x-large>mdi-emoticon-sad</v-icon>
+      <div v-else>
+        <div  v-if="posts.length">
+          <v-row>
+            <v-col sm="12" md="4" lg="3" v-for="(post, index) in posts" :key="index">
+              <div class="post" @click="selectedPostId = post.id">
+                <PostCard :post="post"></PostCard>
+              </div>
+            </v-col>
+          </v-row>
+  
+          <div class="text-center" v-if="total > 1">
+            <v-pagination
+              v-model="page"
+              :length="total"
+            ></v-pagination>
+          </div>
+        </div>
+        <div v-else class="text-center mt-12 text-h3">
+          <div>Desculpe não encontramos nenhum resultado</div>
+          <v-icon x-large>mdi-emoticon-sad</v-icon>
+        </div>
       </div>
     </v-col>
 
@@ -58,6 +70,7 @@ export default {
     Filters
   },
   data: ()=>({
+    loading: true,
     page: 1,
     limit: 12,
     total: 0,
@@ -84,6 +97,7 @@ export default {
       this.getPosts()
     },
     async getPosts(){
+      this.loading = true
       const params = new URLSearchParams(this.lastFilters)
       try {
         const response = await this.$axios.get(`/post/list?page=${this.page}&limit=${this.limit}&${params}`)
@@ -92,6 +106,8 @@ export default {
       } catch(e) {
         console.log(e)
         alert('Ocorreu um erro ao listar as publicações')
+      } finally {
+        this.loading = false
       }
     },
   }
