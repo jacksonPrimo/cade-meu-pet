@@ -1,9 +1,5 @@
 <template>
   <div class="filters">
-    <div class="filter-title">
-      Filtros
-    </div>
-
     <div class="filter mb-3">
       <span class="filter-subtitle">
         Identificação
