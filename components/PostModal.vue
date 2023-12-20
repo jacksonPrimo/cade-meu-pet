@@ -3,8 +3,8 @@
     <v-dialog
       v-model="openModal"
       persistent
-      max-width="600px"
       scrollable
+      max-width="650px"
       style="overflow-x: hidden;"
     >
       <v-card v-if="post">
@@ -23,7 +23,6 @@
         <v-card-text>
           <v-img
             class="white--text align-end"
-            height="500px"
             :src="post.image"
           >
           </v-img>
@@ -54,21 +53,25 @@
             ></v-textarea>
           </div>
           <div class="ml-2 mb-2">
-            <div class="comment-container" v-for="(comment, index) of comments" :key="index">
-              <img class="comment-image" :src="comment.author.profileImage"/>
-              <div class="comment-description">
-                {{ comment.description }}                
+            <div v-for="(comment, index) of comments" :key="index">
+              <div class="comment-container">
+                <div class="comment-image">
+                  <img :src="comment.author.profileImage ? comment.author.profileImage : 'images/profile.svg'" alt="Imagem" />
+                </div>
+                <div class="comment-description">
+                  {{ comment.description }}                
+                </div>
+                <div class="comment-action" v-if="comment.author.id == userId" @click="deleteComment(comment.id)">
+                  <v-icon
+                    color="red"
+                    small
+                    :disabled="comment.id == deletingComment"
+                  >
+                    mdi-delete
+                  </v-icon>
+                </div>
               </div>
-              <div class="comment-action" v-if="comment.author.id == userId">
-                <v-icon
-                  color="red"
-                  small
-                  :disabled="comment.id == deletingComment"
-                  @click="deleteComment(comment.id)"
-                >
-                  mdi-delete
-                </v-icon>
-              </div>
+              <hr>
             </div>
             <div v-if="showMoreComments" class="text-center">
               <a @click="loadMoreComments">Carregar mais</a>
@@ -205,19 +208,44 @@ export default {
   min-height: 30px;
   padding: 10px 5px; 
   margin: 5px 2px;
-  background-color: rgba(0, 0, 0, 0.253);
+  /* background-color: rgba(0, 0, 0, 0.144); */
   border-radius: 5px;
 
   .comment-image {
-    width: 23px;
-    height: 23px;
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
+    overflow: hidden;
+  }
+
+  .comment-image img {
+    width: 100%;
+    height: auto;
+    display: block;
   }
 
   .comment-description {
     width: 90%;
     padding: 0 5px;
     text-align: justify;
+  }
+}
+
+@media only screen and (max-width: 700px) {
+  .comment-container {
+    align-items: center;
+    flex-direction: column;
+    background-color: transparent;
+    .comment-description {
+      width: 98%;
+      padding: 0;
+    }
+    .comment-action {
+      text-align: center;
+      width: 100%;
+      border: 1px solid red;
+      border-radius: 5px;
+    }
   }
 }
 </style>

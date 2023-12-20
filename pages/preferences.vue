@@ -6,9 +6,11 @@
     </div>
     <div class="second-column">
       <v-form ref="accountPreferenceForm" v-model="valid" :disabled="loading">
-        <div class="input-image">
-          <img :src="profileImage ? profileImage : 'images/profile.svg'" class="profile-image">
-          <!-- <a href="https://br.freepik.com/vetores-gratis/ilustracao-do-conceito-de-processamento_7126211.htm#query=config&position=9&from_view=search&track=sph&uuid=69198325-e013-401a-8c54-941a64a8a532">Imagem de storyset</a> no Freepik -->
+        <div class="profile-image-container">
+          <div class="profile-image">
+            <img :src="profileImage ? profileImage : 'images/profile.svg'" alt="Imagem" />
+            <!-- <a href="https://br.freepik.com/vetores-gratis/ilustracao-do-conceito-de-processamento_7126211.htm#query=config&position=9&from_view=search&track=sph&uuid=69198325-e013-401a-8c54-941a64a8a532">Imagem de storyset</a> no Freepik -->
+          </div>
         </div>
         <v-file-input
           solo
@@ -242,23 +244,33 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .preferences {
   display: flex;
   .first-column, .second-column {
     width: 50%;
   }
 }
-.input-image {
+.profile-image-container {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
+
 .profile-image {
-  margin: 15px 0;
-  width: 150px;
-  border-radius: 50%;
+  width: 150px; /* Defina a largura desejada para a imagem */
+  height: 150px; /* Defina a altura desejada para a imagem */
+  border-radius: 50%; /* Define a borda como circular */
+  overflow: hidden; /* Oculta partes da imagem fora do círculo */
 }
+
+.profile-image img {
+  width: 100%; /* Garante que a imagem preencha o espaço do container */
+  height: auto; /* Mantém a proporção original da imagem */
+  display: block; /* Remove espaços indesejados */
+}
+
 .map-btn:hover {
   cursor: pointer;
 }

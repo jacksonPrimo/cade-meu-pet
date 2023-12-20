@@ -73,6 +73,7 @@ export default {
 
 <style lang="scss">
   .create-post {
+    display: flex;
     .first-column {
       height: 90vh;
       width: 50%;
