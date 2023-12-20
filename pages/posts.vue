@@ -1,7 +1,21 @@
 <template>
   <v-row>
     <v-col sm="12" md="3" class="filterContainer">
-      <filters @filter="filter"></filters>
+      <div class="mobile-filter">
+        <v-expansion-panels>
+          <v-expansion-panel>
+            <v-expansion-panel-header>
+              Filtros
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <filters @filter="filter"></filters>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+      </div>
+      <div class="desktop-filter">
+        <filters @filter="filter"></filters>
+      </div>
     </v-col>
     <v-col sm="12" md="9">
       <div  v-if="posts.length">
@@ -85,6 +99,14 @@ export default {
 </script>
 
 <style lang="scss">
+.desktop-filter {
+  display: block;
+}
+
+.mobile-filter {
+  display: none;
+}
+
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -114,6 +136,16 @@ export default {
   .filterContainer {
     height: 100vh;
     overflow-y: scroll;
+  }
+}
+
+@media only screen and (max-width: 960px) {
+  .desktop-filter {
+    display: none;
+  }
+
+  .mobile-filter {
+    display: block;
   }
 }
 

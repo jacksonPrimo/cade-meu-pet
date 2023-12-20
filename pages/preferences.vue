@@ -101,7 +101,7 @@
 
       <v-btn :disabled="loading" v-if="notification" outlined color="blue darken-2" @click="openModal = true">
         <v-icon color="blue darken-2">mdi-map</v-icon>
-        Endereço para o foco das notificações
+        Endereço de notificação
       </v-btn>
 
       <v-dialog
