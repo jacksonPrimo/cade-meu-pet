@@ -1,6 +1,6 @@
 <template>
-  <v-row>
-    <v-col sm="12" md="3" class="filterContainer">
+  <div class="posts-page">
+    <div class="filter-column">
       <div class="mobile-filter">
         <v-expansion-panels>
           <v-expansion-panel>
@@ -16,27 +16,28 @@
       <div class="desktop-filter">
         <filters @filter="filter"></filters>
       </div>
-    </v-col>
-    <v-col sm="12" md="9">
-      <div v-if="loading">
-        <v-row>
-          <v-col sm="12" md="4" lg="3" v-for="(load, index) in 4" :key="index">
-            <v-skeleton-loader
-              class="mx-auto"
-              type="card"
-            ></v-skeleton-loader>
-          </v-col>
-        </v-row>
+    </div>
+    <div class="posts-column">
+      <div v-if="loading" class="posts-container">
+        <div class="post" v-for="(load, index) in 4" :key="index">
+          <v-skeleton-loader
+            class="mx-auto"
+            type="card"
+          ></v-skeleton-loader>
+        </div>
       </div>
       <div v-else>
-        <div  v-if="posts.length">
-          <v-row>
-            <v-col sm="12" md="4" lg="3" v-for="(post, index) in posts" :key="index">
-              <div class="post" @click="selectedPostId = post.id">
-                <PostCard :post="post"></PostCard>
-              </div>
-            </v-col>
-          </v-row>
+        <div v-if="posts.length">
+          <div class="posts-container">
+            <div 
+              v-for="(post, index) in posts" 
+              :key="index"
+              class="post" 
+              @click="selectedPostId = post.id"
+            >
+              <PostCard :post="post"></PostCard>
+            </div>
+          </div>
   
           <div class="text-center" v-if="total > 1">
             <v-pagination
@@ -50,10 +51,9 @@
           <v-icon x-large>mdi-emoticon-sad</v-icon>
         </div>
       </div>
-    </v-col>
-
+    </div>
     <PostModal v-if="selectedPostId" :postId="selectedPostId" @closeModal="selectedPostId=null"></PostModal>
-  </v-row>
+  </div>
 </template>
 
 <script>
@@ -115,19 +115,48 @@ export default {
 </script>
 
 <style lang="scss">
-.desktop-filter {
-  display: block;
-}
+.posts-page {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 
-.mobile-filter {
-  display: none;
+  .filter-column {
+    width: 28%;
+    height: 83vh;
+    padding-right: 3px;
+    padding-bottom: 10px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    .desktop-filter {
+      display: block;
+    }
+    .mobile-filter {
+      display: none;
+    }
+  }
+  .posts-column {
+    width: 72%;
+    .posts-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      .post {
+        width: 30%;
+        margin-bottom: 10px;
+      }
+      .post:hover {
+        cursor: pointer;
+      }
+    }
+  }
 }
 
 ::-webkit-scrollbar {
   width: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f1f1; 
+  background: transparent; 
 }
 ::-webkit-scrollbar-thumb {
   background: #888; 
@@ -139,29 +168,58 @@ export default {
 ::-webkit-scrollbar-button {
   height: 5px;
 }
-.postContainer {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-.post:hover {
-  cursor: pointer;
-}
 
-@media only screen and (min-width: 960px) {
-  .filterContainer {
-    height: 100vh;
-    overflow-y: scroll;
+@media only screen and (min-width: 1300px) {
+  .posts-page {
+    .posts-column {
+      .posts-container {
+        .post {
+          width: 24%;
+        }
+      }
+    }
   }
 }
-
 @media only screen and (max-width: 960px) {
-  .desktop-filter {
-    display: none;
+  .posts-page {
+    .filter-column {
+      width: 100%;
+      height: auto;
+      overflow-y: hidden;
+      .desktop-filter {
+        display: none;
+      }
+      .mobile-filter {
+        margin-bottom: 10px;
+        display: block;
+      }
+    }
+    .posts-column {
+      width: 100%;
+    }
   }
+}
 
-  .mobile-filter {
-    display: block;
+@media only screen and (max-width: 800px) {
+  .posts-page {
+    .posts-column {
+      .posts-container {
+        .post {
+          width: 48%;
+        }
+      }
+    }
+  }
+}
+@media only screen and (max-width: 500px) {
+  .posts-page {
+    .posts-column {
+      .posts-container {
+        .post {
+          width: 98%;
+        }
+      }
+    }
   }
 }
 

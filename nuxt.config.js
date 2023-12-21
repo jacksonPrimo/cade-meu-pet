@@ -109,7 +109,7 @@ export default {
     },
     manifest: {
       name: 'Pet Connection',
-      short_name: 'CMP',
+      short_name: 'PetConn',
       lang: 'pt-br',
       icons: [
         {
