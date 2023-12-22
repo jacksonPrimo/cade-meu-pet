@@ -137,13 +137,15 @@ export default {
   .posts-column {
     width: 72%;
     .posts-container {
+      margin-left: auto;
+      margin-right: auto;
       display: flex;
       flex-direction: row;
-      justify-content: space-around;
+      justify-content: flex-end;
       flex-wrap: wrap;
       .post {
-        width: 30%;
-        margin-bottom: 10px;
+        width: 33%;
+        padding: 8px 5px;
       }
       .post:hover {
         cursor: pointer;
@@ -169,12 +171,12 @@ export default {
   height: 5px;
 }
 
-@media only screen and (min-width: 1300px) {
+@media only screen and (min-width: 1400px) {
   .posts-page {
     .posts-column {
       .posts-container {
         .post {
-          width: 24%;
+          width: 25%;
         }
       }
     }
