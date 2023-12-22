@@ -141,7 +141,7 @@ export default {
       margin-right: auto;
       display: flex;
       flex-direction: row;
-      justify-content: flex-end;
+      justify-content: baseline;
       flex-wrap: wrap;
       .post {
         width: 33%;
