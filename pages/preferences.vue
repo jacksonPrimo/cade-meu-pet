@@ -91,13 +91,31 @@
         label="Tema escuro"
         @change="changeDarkTheme"
       ></v-switch>
-      
-      <v-switch
-        :disabled="loading"
-        v-model="notification"
-        label="Ativar notificações"
-        @change="changeActiveNotifications"
-      ></v-switch>
+      <div style="display: flex;">
+        <v-switch
+          :disabled="loading"
+          v-model="notification"
+          label="Ativar notificações"
+          @change="changeActiveNotifications"
+        ></v-switch>
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <v-icon
+              class="ml-2"
+              color="primary"
+              dark
+              v-bind="attrs"
+              v-on="on"
+            >
+              mdi-information-slab-circle-outline
+            </v-icon>
+          </template>
+          <span>
+            Se ativo você receberá notificações por email sempre que houver uma nova
+            publicação cadastrada na região escolhida na opção abaixo
+          </span>
+        </v-tooltip>
+      </div>
 
       <v-btn :disabled="loading" v-if="notification" outlined color="blue darken-2" @click="openModal = true">
         <v-icon color="blue darken-2">mdi-map</v-icon>
@@ -107,15 +125,15 @@
       <v-dialog
         v-model="openModal"
         persistent
-        max-width="600px"
+        max-width="650px"
       >
         <v-card>
           <v-card-title>
-            <span class="text-h5 mr-auto">Escolha um endereço</span>
+            <span class="text-h5 mr-auto">Endereço</span>
             <v-btn
               color="blue darken-1"
               text
-              @click="closeModal"
+              @click="closeModal(false)"
             >
               <v-icon dark>
                 mdi-close
@@ -125,6 +143,16 @@
           <v-card-text>
             <selectable-map @markLocation="markLocation" :initialLocation="initialLocation()"></selectable-map>
           </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="closeModal(true)"
+            >
+              Salvar
+            </v-btn>
+          </v-card-actions>
         </v-card>
       </v-dialog>
     </div>
@@ -225,12 +253,14 @@ export default {
       this.notificationLat = e.lat
       this.notificationLng = e.lng
     },
-    closeModal(){
+    closeModal(changed){
       this.openModal = false
-      this.updateUser({ 
-        notificationLat: this.notificationLat,
-        notificationLng: this.notificationLng 
-      }, false)
+      if(changed) {
+        this.updateUser({ 
+          notificationLat: this.notificationLat,
+          notificationLng: this.notificationLng 
+        }, false)
+      }
     },
 
     initialLocation(){

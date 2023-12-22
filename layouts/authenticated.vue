@@ -143,7 +143,7 @@ export default {
   }
   @media only screen and (max-width: 800px) {
     .main-container {
-      padding: 0px;
+      padding: 10px 5px;
     }
     .desktop-menu {
       display: none;
