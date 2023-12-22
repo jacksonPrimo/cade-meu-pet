@@ -75,7 +75,7 @@ export default {
   .create-post {
     display: flex;
     .first-column {
-      height: 90vh;
+      height: auto;
       width: 50%;
       background-image: url("../static/images/found.jpg");
       /* Image by <a href="https://www.freepik.com/free-photo/small-dog-being-adorable-studio_15615918.htm#query=animais&position=19&from_view=search&track=sph&uuid=1e54d905-dad0-4749-99a1-774e48f5867e">Freepik</a> */

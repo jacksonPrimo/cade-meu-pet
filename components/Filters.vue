@@ -35,9 +35,9 @@
           Distancia máxima {{filters.distance}}km
         </v-subheader>
         <v-slider
-          step="5"
-          max="100"
-          min="5"
+          step="1"
+          max="30"
+          min="1"
           v-model="filters.distance"
           @change="changeRadius"
         ></v-slider>
@@ -134,7 +134,7 @@ export default {
     coords: null
   }),
   mounted(){
-    this.initializeMap()
+    setTimeout(()=>this.initializeMap(), 500)
   },
   methods: {
     initializeMap() {

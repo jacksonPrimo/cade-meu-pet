@@ -1,6 +1,7 @@
 <template>
   <v-app dark>
     <v-app-bar
+      style="z-index: 5000;"
       elevation="0"
       fixed
       app
@@ -34,7 +35,7 @@
       <v-app-bar-nav-icon class="mobile-menu" @click.stop="drawer = !drawer" />
     </v-app-bar>
     <v-main>
-      <div style="padding: 10px 20px">
+      <div class="main-container">
         <Nuxt/>
       </div>
     </v-main>
@@ -73,7 +74,7 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-footer app>
+    <v-footer app style="z-index: 5000;">
       <span>&copy; {{ new Date().getFullYear() }}</span>
     </v-footer>
   </v-app>
@@ -126,11 +127,14 @@ export default {
 }
 </script>
 <style lang="scss">
+  .main-container {
+    padding: 10px 20px;
+  }
   .leaflet-control-geosearch .results > * {
     color: black !important
   }
   .mobile-menu {
-    z-index: 1000;
+    z-index: 5000;
   }
   @media only screen and (min-width: 800px) {
     .mobile-menu {
@@ -138,6 +142,9 @@ export default {
     }
   }
   @media only screen and (max-width: 800px) {
+    .main-container {
+      padding: 0px;
+    }
     .desktop-menu {
       display: none;
     }

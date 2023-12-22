@@ -263,6 +263,7 @@ export default {
   height: 150px; /* Defina a altura desejada para a imagem */
   border-radius: 50%; /* Define a borda como circular */
   overflow: hidden; /* Oculta partes da imagem fora do círculo */
+  margin-bottom: 10px
 }
 
 .profile-image img {
