@@ -120,6 +120,7 @@ export default {
       const item = this.selectedPostToDelete
       const response = await this.$axios.delete(`/post/${item.id}`)
       this.waitingDelete = false
+      this.deleteAlert = false
       if(response.status == 200) {
         const index = this.posts.findIndex(p=>p.id == item.id)
         this.posts.splice(index, 1)

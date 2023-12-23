@@ -123,7 +123,7 @@ export default {
       var provider = new this.$fireModule.auth.GoogleAuthProvider();
       const { credential } = await this.$fire.auth.signInWithPopup(provider)        
       const response = await this.$axios.post('auth/signinWithGoogle', { token: credential.accessToken })
-      if(response.status == 200) {
+      if(response.status == 201) {
         this.finishSignup(response)
       } else {
         alert(response.message || 'Desculpe ocorreu um erro ao tentar realizar o cadastro')
@@ -138,7 +138,7 @@ export default {
           name: this.name,
           password: this.password
         })
-        if(response.status == 200) {
+        if(response.status == 201) {
           this.finishSignup(response)
         } else {
           alert(response.message || 'Desculpe ocorreu um erro ao tentar realizar o cadastro')

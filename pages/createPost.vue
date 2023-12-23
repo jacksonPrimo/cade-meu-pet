@@ -41,7 +41,7 @@ export default {
       params.image = await this.uploadFile(params.image)
       const response = await this.$axios.post('/post/create', params)
       this.waiting = false
-      if(response.status == 200) {
+      if(response.status == 201) {
         alert("Publicação cadastrada com sucesso!")
         this.$store.dispatch('post/setPostToCreate', {})
         this.$router.push(`/posts?postId=${response.data.id}`)

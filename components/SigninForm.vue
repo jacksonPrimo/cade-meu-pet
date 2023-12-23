@@ -90,7 +90,7 @@ export default {
       const provider = new GoogleAuthProvider();
       const { credential } = await this.$fire.auth.signInWithPopup(provider)        
       const response = await this.$axios.post('/auth/signinWithGoogle', { token: credential.accessToken })
-      if(response.status == 200) {
+      if(response.status == 201) {
         this.finishSignin(response)
       } else {
         const message = response.message || 'Desculpe ocorreu um erro ao tentar realizar o login'
@@ -105,7 +105,7 @@ export default {
           email: this.email,
           password: this.password
         })
-        if(response.status == 200) {
+        if(response.status == 201) {
           this.finishSignin(response)
         } else {
           const message = response.message || 'Desculpe ocorreu um erro ao tentar realizar o login'
