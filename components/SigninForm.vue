@@ -87,28 +87,29 @@ export default {
   }),
   methods: {
     async signInWithGoogle() {
-      try {
-        const provider = new GoogleAuthProvider();
-        const { credential } = await this.$fire.auth.signInWithPopup(provider)        
-        const response = await this.$axios.post('/auth/signinWithGoogle', { token: credential.accessToken })
+      const provider = new GoogleAuthProvider();
+      const { credential } = await this.$fire.auth.signInWithPopup(provider)        
+      const response = await this.$axios.post('/auth/signinWithGoogle', { token: credential.accessToken })
+      if(response.status == 200) {
         this.finishSignin(response)
-      } catch(e) {
-        console.log(e)
-        alert('Desculpe ocorreu um erro ao tentar realizar o login')
+      } else {
+        const message = response.message || 'Desculpe ocorreu um erro ao tentar realizar o login'
+        alert(message)
       }
     },
 
     async signinWithForm(){
       this.$refs.signinForm.validate()
       if(this.valid) {
-        try {
-          const response = await this.$axios.post('/auth/signin', {
-            email: this.email,
-            password: this.password
-          })
+        const response = await this.$axios.post('/auth/signin', {
+          email: this.email,
+          password: this.password
+        })
+        if(response.status == 200) {
           this.finishSignin(response)
-        } catch(e) {
-          console.log(e.response.data.message)
+        } else {
+          const message = response.message || 'Desculpe ocorreu um erro ao tentar realizar o login'
+          alert(message)
         }
       }
     },  

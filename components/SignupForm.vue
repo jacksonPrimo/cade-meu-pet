@@ -120,29 +120,28 @@ export default {
   }),
   methods: {
     async signUpWithGoogle() {
-      try {
-        var provider = new this.$fireModule.auth.GoogleAuthProvider();
-        const { credential } = await this.$fire.auth.signInWithPopup(provider)        
-        const response = await this.$axios.post('auth/signinWithGoogle', { token: credential.accessToken })
+      var provider = new this.$fireModule.auth.GoogleAuthProvider();
+      const { credential } = await this.$fire.auth.signInWithPopup(provider)        
+      const response = await this.$axios.post('auth/signinWithGoogle', { token: credential.accessToken })
+      if(response.status == 200) {
         this.finishSignup(response)
-      } catch(e) {
-        const message = e.response?.data?.message || "Ocorreu um erro ao fazer login"
-        alert(message)
+      } else {
+        alert(response.message || 'Desculpe ocorreu um erro ao tentar realizar o cadastro')
       }
     },
 
     async signupWithForm(){
       this.$refs.signupForm.validate()
       if(this.valid) {
-        try {
-          const response = await this.$axios.post('auth/signup', {
-            email: this.email,
-            name: this.name,
-            password: this.password
-          })
-         this.finishSignup(response)
-        } catch(e) {
-          alert(e.response.data.message)
+        const response = await this.$axios.post('auth/signup', {
+          email: this.email,
+          name: this.name,
+          password: this.password
+        })
+        if(response.status == 200) {
+          this.finishSignup(response)
+        } else {
+          alert(response.message || 'Desculpe ocorreu um erro ao tentar realizar o cadastro')
         }
       }
     },

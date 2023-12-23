@@ -117,13 +117,12 @@ export default {
   },
   methods: {
     async getPost(){
-      try {
-        const response = await this.$axios.get(`/post/${this.postId}`)
+      const response = await this.$axios.get(`/post/${this.postId}`)
+      if(response.status == 200) {
         this.post = response.data
         this.getComments()
-      } catch(e) {
+      } else {
         this.closeModal()
-        console.log(e)
       }
     },
     closeModal(){
@@ -136,14 +135,15 @@ export default {
       this.getComments()
     },
     async getComments(){
-      try {
-        this.loadingComments = true
-        const response = await this.$axios.get(`comment/list?page=${this.page}&limit=${this.limit}&postId=${this.post.id}`)
+      this.loadingComments = true
+      const response = await this.$axios.get(`comment/list?page=${this.page}&limit=${this.limit}&postId=${this.post.id}`)
+      this.loadingComments = false
+      if(response.status == 200) {
         this.comments = this.comments.concat(response.data.comments)
         this.total = response.data.total
-        this.loadingComments = false
-      } catch(e) {
-        alert(e.response.data.message)
+      } else {
+        const message = response.message || "Ocorreu um erro ao listar os comentários"
+        alert(message)
       }
     },
     async writeAComment(e){
@@ -154,25 +154,25 @@ export default {
         postId: this.post.id,
       }
       this.writingComment = true
-      try {
-        const response = await this.$axios.post('comment/create', params)
-        this.comments.push(response.data)
-      } catch(e) {
-        alert(e.response.data.message)
-      }
+      const response = await this.$axios.post('comment/create', params)
       this.writingComment = false
+      if(response.status == 200) {
+        this.comments.push(response.data)
+      } else {
+        const message = response.message || "Ocorreu um erro ao registrar seu comentário"
+        alert(message)
+      }
     },
     async deleteComment(id){
-      try {
-        this.deletingComment = id
-        await this.$axios.delete(`comment/${id}`)
+      this.deletingComment = id
+      const response = await this.$axios.delete(`comment/${id}`)
+      this.deletingComment = null
+      if(response.status == 200) {
         const index = this.comments.findIndex(c => c.id == id)
         this.comments.splice(index, 1)
-      } catch(e) {
-        alert('Desculpe ocorreu um erro ao deletar esse comantário')
-        console.log(e)
-      } finally {
-        this.deletingComment = null
+      } else {
+        const message = response.message || 'Desculpe ocorreu um erro ao deletar esse comantário'
+        alert(message)
       }
     }
   },

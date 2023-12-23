@@ -98,15 +98,14 @@ export default {
   },
   methods: {
     async getPosts(){
-      try {
-        this.loading = true
-        const response = await this.$axios.get(`/post/my?page=${this.page}&limit=${this.limit}`)
+      this.loading = true
+      const response = await this.$axios.get(`/post/my?page=${this.page}&limit=${this.limit}`)
+      this.loading = false
+      if(response.status == 200) {
         this.posts = response.data.posts
         this.total = response.data.total
-      } catch(e) {
-        alert('Ocorreu um erro ao listar suas publicações')
-      } finally {
-        this.loading = false
+      } else {
+        alert(response.message || 'Ocorreu um erro ao listar suas publicações')
       }
     },
     editItem(item) {
@@ -117,17 +116,15 @@ export default {
       this.deleteAlert = true
     },
     async confirmDeleteItem() {
-      try {
-        this.waitingDelete = true
-        const item = this.selectedPostToDelete
-        await this.$axios.delete(`/post/${item.id}`)
+      this.waitingDelete = true
+      const item = this.selectedPostToDelete
+      const response = await this.$axios.delete(`/post/${item.id}`)
+      this.waitingDelete = false
+      if(response.status == 200) {
         const index = this.posts.findIndex(p=>p.id == item.id)
         this.posts.splice(index, 1)
-      } catch(e) {
-        alert('Ocorreu um erro ao deletar sua publicação')
-      } finally {
-        this.deleteAlert = false
-        this.waitingDelete = false
+      } else {
+        alert(response.message || 'Ocorreu um erro ao deletar sua publicação')
       }
     }
   }

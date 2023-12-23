@@ -193,8 +193,9 @@ export default {
     this.darkTheme = !!localStorage.getItem('dark')
     this.userId = getAuthData().userId
     this.loading = true
-    try {
-      const response = await this.$axios.get('user/me')
+    const response = await this.$axios.get('user/me')
+    this.loading = false
+    if(response.status == 200) {
       this.email = response.data.email || ''
       this.name = response.data.name || ''
       this.phone = response.data.phone || ''
@@ -203,8 +204,8 @@ export default {
       this.notificationLat = response.data.notificationLat    
       this.notificationLng = response.data.notificationLng    
       this.loading = false
-    } catch(e) {
-      alert(e.response?.data?.message || "Ocorreu um erro inesperado")
+    } else {
+      alert(response.message || "Ocorreu um erro ao recuperar seus dados")
     }
   },
   methods: {
@@ -230,11 +231,11 @@ export default {
       }
     },
     async updateUser(params, doAlert=true){
-      try {
-        await this.$axios.patch('user', params)
+      const response = await this.$axios.patch('user', params)
+      if(response.status == 200) {
         if(doAlert) alert('Perfil atualizado com sucesso!')
-      } catch(e) {
-        alert(e.response.data.message)
+      } else {
+        alert(response.message || "Ocorreu um erro ao atualizar seus dados")
       }
     },
     changeDarkTheme(value){

@@ -9,15 +9,6 @@
         <location :currentStep="currentStep" @next="finish" @previous="previous" :waiting="waiting"></location>
       </v-stepper>
     </div>
-    <v-snackbar v-model="alert">
-      {{ alertText }}
-
-      <template>
-        <v-btn text @click="alert = false">
-          Close
-        </v-btn>
-      </template>
-    </v-snackbar>
   </div>
 </template>
 
@@ -35,8 +26,6 @@ export default {
   layout: "authenticated",
   data: () => ({
     currentStep: 1,
-    alert: false,
-    alertText: '',
     waiting: false
   }),
   methods: {
@@ -50,16 +39,14 @@ export default {
       this.waiting = true
       const params = {...this.$store.state.post.postToCreate}
       params.image = await this.uploadFile(params.image)
-      try {
-        const response = await this.$axios.post('/post/create', params)
+      const response = await this.$axios.post('/post/create', params)
+      this.waiting = false
+      if(response.status == 200) {
+        alert("Publicação cadastrada com sucesso!")
         this.$store.dispatch('post/setPostToCreate', {})
         this.$router.push(`/posts?postId=${response.data.id}`)
-      } catch(e) {
-        console.log(e)
-        this.alertText = e.response?.data?.message || "Ocorreu um erro ao tentar cadastrar sua publicação"
-      } finally {
-        this.waiting = false
-        this.alert = true
+      } else {
+        alert(response.message || "Ocorreu um erro ao tentar cadastrar sua publicação")
       }
     },
     uploadFile(image){

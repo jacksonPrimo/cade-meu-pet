@@ -157,18 +157,17 @@ export default {
       this.post.addressLng = location.lng
     },
     async update(){
-      try {
-        this.waiting = true
-        this.$refs.editPostForm.validate()
-        if(!this.validForm) return 
-        if(this.imageFile) this.post.image = await this.uploadFile()
-        await this.$axios.patch(`/post/${this.selectedPost.id}`, this.post)
+      this.$refs.editPostForm.validate()
+      if(!this.validForm) return 
+      if(this.imageFile) this.post.image = await this.uploadFile()
+      this.waiting = true
+      const response = await this.$axios.patch(`/post/${this.selectedPost.id}`, this.post)
+      this.waiting = false
+      if(response.status == 200) {
         alert('Publicação atualizada com sucesso')
-      } catch(e) {
-        console.log(e)
-        alert('Ocorreu um problema ao atualizar sua publicação')
-      } finally {
-        this.waiting = false
+      } else {
+        const message = response.message || 'Ocorreu um problema ao atualizar sua publicação'
+        alert(message)
       }
     },
     async uploadFile(){

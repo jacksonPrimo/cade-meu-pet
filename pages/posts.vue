@@ -97,17 +97,16 @@ export default {
       this.getPosts()
     },
     async getPosts(){
-      this.loading = true
       const params = new URLSearchParams(this.lastFilters)
-      try {
-        const response = await this.$axios.get(`/post/list?page=${this.page}&limit=${this.limit}&${params}`)
+      this.loading = true
+      const response = await this.$axios.get(`/post/list?page=${this.page}&limit=${this.limit}&${params}`)
+      this.loading = false
+      if(response.status == 200) {
         this.posts = response.data.posts
         this.total = response.data.total
-      } catch(e) {
-        console.log(e)
-        alert('Ocorreu um erro ao listar as publicações')
-      } finally {
-        this.loading = false
+      } else {
+        const message = response.message || 'Ocorreu um erro ao listar as publicações'
+        alert(message)
       }
     },
   }
