@@ -66,10 +66,10 @@
 
         <v-list-item router exact @click="logout">
           <v-list-item-action>
-            <v-icon>mdi-exit-to-app</v-icon>
+            <v-icon color="red">mdi-exit-to-app</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title color="red">Sair</v-list-item-title>
+            <v-list-item-title class="red--text">Sair</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -80,7 +80,6 @@
   </v-app>
 </template>
 <script>
-import { authenticated, logout } from '@/utils/auth'
 
 export default {
   name: 'AuthenticatedLayout',
@@ -113,14 +112,15 @@ export default {
     }
   },
   async beforeMount(){
-    if(!authenticated()) this.$router.push('/')
+    const authenticated = localStorage.getItem('authToken')
+    if(!authenticated) this.$router.push('/')
 
     const dark = !!localStorage.getItem('dark')
     this.$vuetify.theme.dark = dark
   },
   methods: {
     logout(){
-      logout()
+      localStorage.removeItem('authToken')
       this.$router.push('/')
     }
   }
