@@ -3,7 +3,7 @@
     <v-dialog
       v-model="openModal"
       persistent
-      max-width="600px"
+      max-width="650px"
       scrollable
       style="overflow-x: hidden;"
     >
@@ -23,7 +23,6 @@
         <v-card-text>
           <v-img
             class="white--text align-end"
-            height="500px"
             :src="post.image"
           >
           </v-img>
