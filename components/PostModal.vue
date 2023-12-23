@@ -58,20 +58,22 @@
                 <div class="comment-image">
                   <img :src="comment.author.profileImage ? comment.author.profileImage : 'images/profile.svg'" alt="Imagem" />
                 </div>
+                <hr style="width: 50px; margin: 10px 0">
                 <div class="comment-description">
                   {{ comment.description }}                
                 </div>
                 <div class="comment-action" v-if="comment.author.id == userId" @click="deleteComment(comment.id)">
-                  <v-icon
-                    color="red"
-                    small
-                    :disabled="comment.id == deletingComment"
-                  >
-                    mdi-delete
-                  </v-icon>
+                  <v-btn color="red" small outlined :disabled="comment.id == deletingComment">
+                    <v-icon
+                      color="red"
+                      small
+                    >
+                      mdi-delete
+                    </v-icon>
+                  </v-btn>
                 </div>
               </div>
-              <hr>
+              <!-- <hr> -->
             </div>
             <div v-if="showMoreComments" class="text-center">
               <a @click="loadMoreComments">Carregar mais</a>
@@ -156,7 +158,7 @@ export default {
       this.writingComment = true
       const response = await this.$axios.post('comment/create', params)
       this.writingComment = false
-      if(response.status == 200) {
+      if(response.status == 201) {
         this.comments.push(response.data)
       } else {
         const message = response.message || "Ocorreu um erro ao registrar seu comentário"
@@ -202,18 +204,17 @@ export default {
 <style lang="scss">
 .comment-container {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  align-items: center;
   text-wrap: wrap; 
   width: 98%;
   min-height: 30px;
-  padding: 10px 5px; 
-  margin: 5px 2px;
-  /* background-color: rgba(0, 0, 0, 0.144); */
-  border-radius: 5px;
+  padding: 10px 0px; 
+  margin: 5px 0px;
 
   .comment-image {
-    width: 35px;
-    height: 35px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
     overflow: hidden;
   }
@@ -225,27 +226,9 @@ export default {
   }
 
   .comment-description {
-    width: 90%;
+    width: 98%;
     padding: 0 5px;
     text-align: justify;
-  }
-}
-
-@media only screen and (max-width: 700px) {
-  .comment-container {
-    align-items: center;
-    flex-direction: column;
-    background-color: transparent;
-    .comment-description {
-      width: 98%;
-      padding: 0;
-    }
-    .comment-action {
-      text-align: center;
-      width: 100%;
-      border: 1px solid red;
-      border-radius: 5px;
-    }
   }
 }
 </style>
