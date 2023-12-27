@@ -7,7 +7,7 @@
       
       <div>
         <v-text-field
-          outlined
+          solo
           dense
           v-model="filters.name"
           label="Nome"
@@ -15,7 +15,7 @@
         ></v-text-field>
 
         <v-text-field
-          outlined
+          solo
           dense
           v-model="filters.chip"
           label="Chip Subcutaneo"
@@ -30,7 +30,6 @@
       </span>
       
       <div>
-        <div ref="map" class="map-containerr"></div>
         <v-subheader class="pl-0">
           Distancia máxima {{filters.distance}}km
         </v-subheader>
@@ -41,11 +40,11 @@
           v-model="filters.distance"
           @change="changeRadius"
         ></v-slider>
+        <div ref="map" class="map-containerr"></div>
       </div>
-
     </div>
     
-    <div class="filter">
+    <div class="filter mt-4">
       <span class="filter-subtitle">
         Situação do pet
       </span>
@@ -234,6 +233,9 @@ export default {
     .v-text-field__details, .v-messages {
       display: none;
     }
+  }
+  .v-input__slot {
+    background-color: none;
   }
 }
 </style>
