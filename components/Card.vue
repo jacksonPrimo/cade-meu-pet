@@ -22,9 +22,9 @@
       <div>Raça: {{ race }}</div>
     </v-card-text>
 
-    <v-card-actions color="green">
+    <v-card-actions style="padding: 0">
       <v-alert
-        style="width: 100%;"
+        style="width: 100%; margin: 0"
         dark
         :color="styleSituation.color"
         :icon="styleSituation.icon"
