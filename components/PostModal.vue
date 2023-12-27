@@ -30,6 +30,7 @@
             Localização
           </v-card-title>
           <selectable-map :canEdit="false" :initialLocation="[post.addressLat, post.addressLng]"></selectable-map>
+          <p>{{ post.addressLabel }}</p>
           <v-card-title>Outras informações</v-card-title>
           <p>Gênero: {{ gender }}</p>
           <p>Raça: {{ race }}</p>

@@ -30,6 +30,8 @@
             accept="image/*"
             label="Selecione uma imagem"
             v-model="imageFile"
+            outlined
+            class="mt-4"
           >
           </v-file-input>
           <v-card-title>
@@ -39,12 +41,19 @@
           <selectable-map @markLocation="markLocation" :initialLocation="[post.addressLat, post.addressLng]"></selectable-map>
 
           <v-form ref="editPostForm" v-model="validForm" class="mt-6">
+            <v-text-field
+              label="Endereço"
+              v-model="post.addressLabel"
+              :rules="[ value => value ? true : 'Endereço é obrigatório' ]"
+              outlined
+            ></v-text-field>
+            
             <v-select
               :items="situationOpt"
               :rules="[ value => value ? true : 'Situação é obrigatório' ]"
               label="Situação"
               v-model="post.situation"
-              solo
+              outlined
             ></v-select>
 
             <v-select
@@ -52,7 +61,7 @@
               :rules="[ value => value ? true : 'Espécie é obrigatório' ]"
               label="Espécie"
               v-model="post.race"
-              solo
+              outlined
             ></v-select>
 
             <v-select
@@ -60,7 +69,7 @@
               :rules="[ value => value ? true : 'Gênero é obrigatório' ]"
               label="Gênero"
               v-model="post.gender"
-              solo
+              outlined
             ></v-select>
 
             <v-text-field
@@ -68,19 +77,19 @@
               label="Recompensa(Opcional)"
               v-model="post.reward"
               type="number"
-              solo
+              outlined
             ></v-text-field>
 
             <v-text-field
               label="Nome"
               v-model="post.name"
-              solo
+              outlined
             ></v-text-field>
 
             <v-text-field
               label="Nª.Microchip"
               v-model="post.chip"
-              solo
+              outlined
             ></v-text-field>
 
             <v-textarea
