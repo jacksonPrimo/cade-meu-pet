@@ -131,7 +131,8 @@ export default {
       smallerThanLng: ''
     },
     circle: null,
-    coords: null
+    coords: null,
+    marker: null
   }),
   mounted(){
     setTimeout(()=>this.initializeMap(), 500)
@@ -151,6 +152,7 @@ export default {
         keepResult: true,
       })
       this.map.addControl(searchControl)
+      this.map.on('click', (e) => this.handleSelectedLocation({location: { y: e.latlng.lat, x: e.latlng.lng }}));
       this.map.on('geosearch/showlocation', this.handleSelectedLocation)
       document
         .querySelector('button.reset[aria-label="Clear search"]')
@@ -178,6 +180,12 @@ export default {
         })
         this.circle.addTo(this.map);
       }
+
+      if(!this.marker) {
+        this.marker = e.marker
+      } else {
+        this.marker.setLatLng([lat, lng])
+      }
     },
     resetLocation(){
       if(this.circle) {
@@ -188,6 +196,8 @@ export default {
       this.filters['smallerThanLat'] = ''
       this.filters['biggerThanLng'] = ''
       this.filters['smallerThanLng'] = ''
+      this.marker = null
+      this.map.setView([-12.256545945045046, -55.52556684608532], 4)
     },
     filter() {
       this.$emit('filter', this.filters)
