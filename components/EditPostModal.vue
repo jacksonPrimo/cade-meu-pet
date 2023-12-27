@@ -8,7 +8,7 @@
       style="overflow-x: hidden;"
     >
       <v-card v-if="openModal">
-        <v-card-title>
+        <v-card-title class="pt-12">
           <span class="text-h5 mr-auto">{{post.name}}</span>
           <v-btn
             color="blue darken-1"
