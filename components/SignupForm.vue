@@ -38,7 +38,7 @@
             @click:append="showPassword = !showPassword"
             :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
             prepend-inner-icon="mdi-lock"
-            label="Password"
+            label="Senha"
             required
             solo
             dense
@@ -56,7 +56,7 @@
             @click:append="showConfirmPassword = !showConfirmPassword"
             :append-icon="showConfirmPassword ? 'mdi-eye' : 'mdi-eye-off'"
             prepend-inner-icon="mdi-lock"
-            label="Password Confirmation"
+            label="Confirmar senha"
             required
             solo
             dense

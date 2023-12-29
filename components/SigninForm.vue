@@ -17,7 +17,7 @@
             solo
             v-model="password"
             :rules="passwordRules"
-            label="Password"
+            label="Senha"
             prepend-inner-icon="mdi-lock-outline"
             required
           ></v-text-field>
@@ -67,7 +67,7 @@ export default {
     passwordRules: [
       value => {
         if (value) return true
-        return 'Password is required.'
+        return 'Senha é um campo obrigatório.'
       },
     ],
     email: '',
@@ -75,12 +75,12 @@ export default {
       value => {
         if (value) return true
 
-        return 'E-mail is required.'
+        return 'E-mail é um campo obrigatório.'
       },
       value => {
         if (/.+@.+\..+/.test(value)) return true
 
-        return 'E-mail must be valid.'
+        return 'E-mail inválido.'
       },
     ],
     signinError: false

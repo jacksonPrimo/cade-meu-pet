@@ -7,7 +7,7 @@
             <span>
               Bem Vindo
             </span>
-            <span>Ficamos felizes em vê-lo de volta conosco</span>
+            <span v-if="signin">Ficamos felizes em vê-lo de volta conosco</span>
           </div>
           <SigninForm @changeToSignup="()=>signin = false" v-if="signin"></SigninForm>
           <SignupForm @changeToSignin="()=>signin = true" v-else></SignupForm>
