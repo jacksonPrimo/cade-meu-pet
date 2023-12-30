@@ -10,6 +10,18 @@
           <div class="profile-image">
             <img :src="profileImage ? profileImage : 'images/profile.svg'" alt="Imagem" />
             <!-- <a href="https://br.freepik.com/vetores-gratis/ilustracao-do-conceito-de-processamento_7126211.htm#query=config&position=9&from_view=search&track=sph&uuid=69198325-e013-401a-8c54-941a64a8a532">Imagem de storyset</a> no Freepik -->
+            <div class="actions">
+              <v-btn color="red" :disabled="loadingRemoveImage" v-if="profileImage" @click="removeImage">
+                <v-icon
+                  color="white"
+                  dark
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  mdi-trash-can
+                </v-icon>
+              </v-btn>
+            </div>
           </div>
         </div>
         <v-file-input
@@ -17,10 +29,9 @@
           prepend-icon=""
           prepend-inner-icon="mdi-camera"
           accept="image/*"
-          label="File input"
+          label="Escolha uma imagem"
           v-model="imageFile"
         ></v-file-input>
-
         <v-text-field
           solo
           prepend-inner-icon="mdi-email"
@@ -174,6 +185,7 @@ export default {
     valid: false,
     openModal: false,
     loading: false,
+    loadingRemoveImage: false,
     showPassword: false,
     showConfirmPassword: false,
     darkTheme: false,
@@ -214,13 +226,18 @@ export default {
       if(this.valid){ 
         this.loading = true
         await this.uploadImageFile()
-        await this.updateUser({
+        const response = await this.$axios.patch('user', {
           email: this.email,
           name: this.name,
           phone: this.phone,
           profileImage: this.profileImage,
           password: this.password,
         })
+        if(response.status == 200) {
+          alert('Perfil atualizado com sucesso!')
+        } else {
+          alert(response.message || "Ocorreu um erro ao atualizar seus dados")
+        }
         this.loading = false
       }
     },
@@ -228,14 +245,6 @@ export default {
       if(this.imageFile) {
         const path = `${this.userId}/profile`
         this.profileImage = await uploadImage(this.imageFile, path, this)
-      }
-    },
-    async updateUser(params, doAlert=true){
-      const response = await this.$axios.patch('user', params)
-      if(response.status == 200) {
-        if(doAlert) alert('Perfil atualizado com sucesso!')
-      } else {
-        alert(response.message || "Ocorreu um erro ao atualizar seus dados")
       }
     },
     changeDarkTheme(value){
@@ -248,7 +257,7 @@ export default {
       }
     },
     async changeActiveNotifications(value){
-      await this.updateUser({ notification: value }, false)
+      await this.$axios.patch('user', { notification: value })
     },
     markLocation(e){
       this.notificationLat = e.lat
@@ -257,10 +266,10 @@ export default {
     closeModal(changed){
       this.openModal = false
       if(changed) {
-        this.updateUser({ 
+        this.$axios.patch('user', {
           notificationLat: this.notificationLat,
           notificationLng: this.notificationLng 
-        }, false)
+        })
       }
     },
 
@@ -270,6 +279,19 @@ export default {
       } else {
         return null
       }
+    },
+
+    async removeImage(){
+      this.loadingRemoveImage = true
+      const response = await this.$axios.patch('user', {
+        profileImage: ""
+      })
+      if(response.status !== 200) {
+        alert(response.message || "Ocorreu um erro ao remover sua foto de perfil")
+      } else {
+        this.profileImage = ""
+      }
+      this.loadingRemoveImage = false
     }
   }
 }
@@ -290,6 +312,7 @@ export default {
 }
 
 .profile-image {
+  position: relative;
   width: 150px; /* Defina a largura desejada para a imagem */
   height: 150px; /* Defina a altura desejada para a imagem */
   border-radius: 50%; /* Define a borda como circular */
@@ -301,6 +324,14 @@ export default {
   width: 100%; /* Garante que a imagem preencha o espaço do container */
   height: auto; /* Mantém a proporção original da imagem */
   display: block; /* Remove espaços indesejados */
+}
+
+.profile-image .actions {
+  text-align: center;
+  margin-top: -25px;
+  button {
+    width: 100%;
+  }
 }
 
 .map-btn:hover {
