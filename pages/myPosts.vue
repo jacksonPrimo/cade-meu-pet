@@ -26,12 +26,7 @@
         </v-icon>
       </template>
       <template v-slot:no-data>
-        <v-btn
-          color="primary"
-          @click="initialize"
-        >
-          Reset
-        </v-btn>
+        <span>Você ainda não possui publicações</span>
       </template>
     </v-data-table>
     <div class="text-center" v-if="total > 1">
@@ -57,6 +52,7 @@
 
 <script>
 import EditPostModal from '@/components/EditPostModal'
+import { situationOpt, specieOpt, genderOpt } from '@/static/postOptions'
 
 export default {
   name: "MyPosts",
@@ -102,11 +98,23 @@ export default {
       const response = await this.$axios.get(`/post/my?page=${this.page}&limit=${this.limit}`)
       this.loading = false
       if(response.status == 200) {
-        this.posts = response.data.posts
+        this.posts = this.formatPosts(response.data.posts)
         this.total = response.data.total
       } else {
         alert(response.message || 'Ocorreu um erro ao listar suas publicações')
       }
+    },
+    formatPosts(posts){
+      console.log(posts)
+      const genders = genderOpt()
+      const species = specieOpt()
+      const situations = situationOpt()
+      return posts.map(post=>{
+        post.gender = genders.find(o=>o.value == post.gender).text
+        post.specie = species.find(o=>o.value == post.race).text
+        post.situation = situations.find(o=>o.value == post.situation).text
+        return post
+      })
     },
     editItem(item) {
       this.selectedPostToEdit = item
@@ -127,7 +135,7 @@ export default {
       } else {
         alert(response.message || 'Ocorreu um erro ao deletar sua publicação')
       }
-    }
+    },
   }
 }
 </script>
