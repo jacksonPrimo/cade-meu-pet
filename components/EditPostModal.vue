@@ -172,6 +172,7 @@ export default {
       const response = await this.$axios.patch(`/post/${this.selectedPost.id}`, this.post)
       this.waiting = false
       if(response.status == 200) {
+        this.$emit("updatedPost")
         alert('Publicação atualizada com sucesso')
       } else {
         const message = response.message || 'Ocorreu um problema ao atualizar sua publicação'

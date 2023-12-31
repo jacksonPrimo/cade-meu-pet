@@ -46,7 +46,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <edit-post-modal v-if="selectedPostToEdit" :selectedPost="selectedPostToEdit" @closeModal="selectedPostToEdit=null"></edit-post-modal>
+    <edit-post-modal v-if="selectedPostToEdit" :selectedPost="selectedPostToEdit" @closeModal="selectedPostToEdit=null" @updatedPost="updatePosts"></edit-post-modal>
   </div>
 </template>
 
@@ -65,9 +65,9 @@ export default {
       { text: 'Nome', value: 'name' },
       { text: 'Postado em', value: 'postedAt' },
       { text: 'chip', value: 'chip' },
-      { text: 'situação', value: 'situation' },
-      { text: 'Raça', value: 'race' },
-      { text: 'Gênero', value: 'gender' },
+      { text: 'situação', value: 'situationFormatted' },
+      { text: 'Raça', value: 'raceFormatted' },
+      { text: 'Gênero', value: 'genderFormatted' },
       { text: 'Ações', value: 'actions', sortable: false },
     ],
     posts: [],
@@ -105,14 +105,13 @@ export default {
       }
     },
     formatPosts(posts){
-      console.log(posts)
       const genders = genderOpt()
       const species = specieOpt()
       const situations = situationOpt()
       return posts.map(post=>{
-        post.gender = genders.find(o=>o.value == post.gender).text
-        post.specie = species.find(o=>o.value == post.race).text
-        post.situation = situations.find(o=>o.value == post.situation).text
+        post.genderFormatted = genders.find(o=>o.value == post.gender).text
+        post.raceFormatted = species.find(o=>o.value == post.race).text
+        post.situationFormatted = situations.find(o=>o.value == post.situation).text
         return post
       })
     },
@@ -136,6 +135,9 @@ export default {
         alert(response.message || 'Ocorreu um erro ao deletar sua publicação')
       }
     },
+    updatePosts(){
+      this.getPosts()
+    }
   }
 }
 </script>
