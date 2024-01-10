@@ -6,7 +6,17 @@
       fixed
       app
     >
-      <v-toolbar-title>{{ title }}</v-toolbar-title>
+      <v-btn
+        plain 
+        to="/posts"
+        router
+        exact
+      >
+        <v-icon class="mr-1">mdi-paw</v-icon>
+        <v-toolbar-title>
+          {{ title }}
+        </v-toolbar-title>
+      </v-btn>
       <v-spacer />
       <div class="desktop-menu">
         <v-btn 
@@ -93,7 +103,7 @@ export default {
           to: '/createPost'
         },
         {
-          icon: 'mdi-paw',
+          icon: 'mdi-dog',
           title: 'Publicações',
           to: '/posts'
         },
