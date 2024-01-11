@@ -1,5 +1,6 @@
 <template>
   <div class="create-post">
+    <Loading v-if="waiting"></Loading>
     <div class="first-column"></div>
     <div class="second-column">
       <v-stepper v-model="currentStep" vertical>
