@@ -1,5 +1,7 @@
 <template>
   <div class="preferences">
+    <Loading v-if="loading"></Loading>
+    <Alert :config="alertConfig" :open="showAlert"></Alert>
     <div class="first-column">
       <img src="images/preferences.svg">
       <!-- <a href="https://br.freepik.com/vetores-gratis/ilustracao-do-conceito-de-processamento_7126211.htm#query=config&position=9&from_view=search&track=sph&uuid=69198325-e013-401a-8c54-941a64a8a532">Imagem de storyset</a> no Freepik -->
@@ -173,13 +175,17 @@
 <script>
 import { uploadImage } from '@/utils/image'
 import SelectableMap from '@/components/selectableMap.vue'
+import Alert from '@/components/alert.vue'
 import { getAuthData } from '@/utils/auth'
+import Loading from '../components/loading.vue'
 
 export default {
   name: 'AccountPreferences',
   layout: "authenticated",
   components: {
-    SelectableMap
+    SelectableMap,
+    Alert,
+    Loading
   },
   data: () => ({
     valid: false,
@@ -200,6 +206,8 @@ export default {
     notificationLng: '',
     password: '',
     passwordConfirmation: '',
+    showAlert: false,
+    alertConfig: {}
   }),
   async mounted(){
     this.darkTheme = !!localStorage.getItem('dark')
@@ -234,10 +242,19 @@ export default {
           password: this.password,
         })
         if(response.status == 200) {
-          alert('Perfil atualizado com sucesso!')
+          this.alertConfig = {
+            description: "Perfil atualizado com sucesso!",
+            persistent: false,
+            success: true
+          }
         } else {
-          alert(response.message || "Ocorreu um erro ao atualizar seus dados")
+          this.alertConfig = {
+            description: response.message || "Ocorreu um erro ao atualizar seus dados",
+            persistent: false,
+            success: false
+          }
         }
+        this.showAlert = true
         this.loading = false
       }
     },
