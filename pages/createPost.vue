@@ -1,6 +1,7 @@
 <template>
   <div class="create-post">
     <Loading v-if="waiting"></Loading>
+    <Alert :config="alertConfig" :open="showAlert" @agree="goToPost"></Alert>
     <div class="first-column"></div>
     <div class="second-column">
       <v-stepper v-model="currentStep" vertical>
@@ -17,17 +18,21 @@
 import BasicInfo from '@/components/Steps/BasicInfo.vue'
 import Identify from '@/components/Steps/Identify.vue'
 import Location from '@/components/Steps/Location.vue'
+import Alert from '@/components/alert.vue'
 import PostImage from '@/components/Steps/PostImage.vue'
 import { uploadImage, randomImageId } from '@/utils/image'
 import { getAuthData } from '@/utils/auth'
 
 export default {
-  components: { BasicInfo, Identify, Location, PostImage },
+  components: { BasicInfo, Identify, Location, PostImage, Alert },
   name: 'CreatePost',
   layout: "authenticated",
   data: () => ({
     currentStep: 1,
-    waiting: false
+    waiting: false,
+    alertConfig: {},
+    showAlert: false,
+    postId: ""
   }),
   methods: {
     next(){
@@ -41,20 +46,33 @@ export default {
       const params = {...this.$store.state.post.postToCreate}
       params.image = await this.uploadFile(params.image)
       const response = await this.$axios.post('/post/create', params)
-      this.waiting = false
       if(response.status == 201) {
-        alert("Publicação cadastrada com sucesso!")
         this.$store.dispatch('post/setPostToCreate', {})
-        this.$router.push(`/posts?postId=${response.data.id}`)
+        this.alertConfig = {
+          description: "Publicação cadastrada com sucesso!",
+          persistent: true,
+          success: true,
+          agreeBtn: "Ir para publicação"
+        }
+        this.postId = response.data.id
       } else {
-        alert(response.message || "Ocorreu um erro ao tentar cadastrar sua publicação")
+        this.alertConfig = {
+          description: response.message || "Ocorreu um erro ao tentar cadastrar sua publicação",
+          persistent: false,
+          success: false
+        }
       }
+      this.waiting = false
+      this.showAlert = true
     },
     uploadFile(image){
       const { userId } = getAuthData()
       const path = `${userId}/${randomImageId()}`
       return uploadImage(image, path, this)
     },
+    goToPost(){
+      this.$router.push(`/posts?postId=${this.postId}`)
+    }
   }
 }
 </script>

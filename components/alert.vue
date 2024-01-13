@@ -1,9 +1,10 @@
 <template>
-  <v-row justify="center">
+  <v-row justify="center" style="z-index: 10000">
     <v-dialog
       :persistent="config.persistent"
       v-model="open"
-      max-width="290"
+      min-width="290"
+      max-width="400"
     >
       <v-card>
         <div class="text-center pt-3">
@@ -16,23 +17,23 @@
           {{ config.description }}
         </v-card-text>
 
-        <v-card-actions class="text-center">
-          <v-spacer></v-spacer>
-
-          <v-btn
-            v-if="config.disagreeBtn"
-            color="green darken-1"
-            text
-          >
-            {{ config.disagreeBtn }}
-          </v-btn>
-
+        <v-card-actions style="display: flex; justify-content: center;">
           <v-btn
             v-if="config.agreeBtn"
             color="green darken-1"
+            @click="agree"
             text
           >
             {{ config.agreeBtn }}
+          </v-btn>
+
+          <v-btn
+            v-if="config.disagreeBtn"
+            color="red darken-1"
+            @click="disagree"
+            text
+          >
+            {{ config.disagreeBtn }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -59,5 +60,13 @@
         required: true
       },
     },
+    methods: {
+      agree(){
+        this.$emit("agree")
+      },
+      disagree(){
+        this.$emit("disagree")
+      }
+    }
   }
 </script>
